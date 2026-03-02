@@ -38,14 +38,16 @@ export default function AllGames() {
   const filtered = useMemo(() => {
     let list = [...games];
 
-    // Search
+    // Search — normalize diacritics so e.g. "ragnarok" matches "Ragnarök"
     if (state.searchQuery.trim()) {
-      const q = state.searchQuery.toLowerCase();
+      const normalize = (str) =>
+        str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      const q = normalize(state.searchQuery);
       list = list.filter(
         (g) =>
-          g.title.toLowerCase().includes(q) ||
-          g.category.toLowerCase().includes(q) ||
-          g.publisher.toLowerCase().includes(q)
+          normalize(g.title).includes(q) ||
+          normalize(g.category).includes(q) ||
+          normalize(g.publisher).includes(q)
       );
     }
 

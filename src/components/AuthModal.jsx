@@ -164,10 +164,7 @@ export default function AuthModal() {
             <Chrome size={18} />
             Google
           </button>
-          <button className="social-btn github" onClick={() => handleSocial("GitHub")} disabled={loading}>
-            <Github size={18} />
-            GitHub
-          </button>
+        
         </div>
 
         <div className="divider">

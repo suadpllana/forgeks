@@ -13,6 +13,11 @@ import GiftCards from "./pages/GiftCards";
 import Profile from "./pages/Profile";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import RefundPolicy from "./pages/legal/RefundPolicy";
+import HelpCenter from "./pages/legal/HelpCenter";
+import ContactUs from "./pages/legal/ContactUs";
+import TermsOfService from "./pages/legal/TermsOfService";
 import "./lib/i18n";
 import "./App.css";
 
@@ -41,6 +46,11 @@ export default function App() {
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/gift-cards" element={<GiftCards />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/refund-policy" element={<RefundPolicy />} />
+                    <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/help" element={<HelpCenter />} />
+                    <Route path="/contact" element={<ContactUs />} />
                   </Routes>
                 </main>
                 <Footer />

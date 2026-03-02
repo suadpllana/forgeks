@@ -160,13 +160,13 @@ const games = [
     description:
       "Swing through Marvel's New York as both Peter Parker and Miles Morales. Face iconic villains in this thrilling action-adventure sequel.",
     features: ["Dual Protagonists", "Open World NYC", "Web Swinging", "Epic Boss Fights"],
-    // Steam appid 2564150 — API age-gated, using CDN direct URLs
-    image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2564150/header.jpg",
-    banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2564150/header.jpg",
+    // Using PlayStation image CDN (not age-gated)
+    image: "https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/1c8d2f7c0b79a63d1d1e4e6d5f4a2b3c9e8f1a2b.png",
+    banner: "https://gaming-cdn.com/images/products/9765/616x353/marvels-spider-man-2-ps5-game-playstation-cover.jpg",
     screenshots: [
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2564150/capsule_616x353.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2564150/capsule_616x353.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2564150/capsule_616x353.jpg",
+      "https://gaming-cdn.com/images/products/9765/screenshot/marvels-spider-man-2-ps5-game-playstation-wallpaper-1.jpg",
+      "https://gaming-cdn.com/images/products/9765/screenshot/marvels-spider-man-2-ps5-game-playstation-wallpaper-2.jpg",
+      "https://gaming-cdn.com/images/products/9765/screenshot/marvels-spider-man-2-ps5-game-playstation-wallpaper-3.jpg",
     ],
   },
   {
@@ -340,12 +340,48 @@ const games = [
 ];
 
 export const giftCards = [
-  { id: 101, title: "PlayStation Store $25", price: 25.0, platform: "PS5", image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2322010/capsule_616x353.jpg" },
-  { id: 102, title: "PlayStation Store $50", price: 50.0, platform: "PS5", image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2322010/capsule_616x353.jpg" },
-  { id: 103, title: "PlayStation Store $100", price: 100.0, platform: "PS5", image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2322010/capsule_616x353.jpg" },
-  { id: 104, title: "Steam Wallet $20", price: 20.0, platform: "PC", image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/capsule_616x353.jpg" },
-  { id: 105, title: "Steam Wallet $50", price: 50.0, platform: "PC", image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/capsule_616x353.jpg" },
-  { id: 106, title: "Steam Wallet $100", price: 100.0, platform: "PC", image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/capsule_616x353.jpg" },
+  {
+    id: 101,
+    title: "PlayStation Store $25",
+    price: 25.0,
+    platform: "PS5",
+    image: "https://m.media-amazon.com/images/I/71syFGmFk9L._SL1500_.jpg",
+  },
+  {
+    id: 102,
+    title: "PlayStation Store $50",
+    price: 50.0,
+    platform: "PS5",
+    image: "https://m.media-amazon.com/images/I/71Z06NhHlAL._SL1500_.jpg",
+  },
+  {
+    id: 103,
+    title: "PlayStation Store $100",
+    price: 100.0,
+    platform: "PS5",
+    image: "https://m.media-amazon.com/images/I/61OD3Bq9SjL._SL1500_.jpg",
+  },
+  {
+    id: 104,
+    title: "Steam Wallet $20",
+    price: 20.0,
+    platform: "PC",
+    image: "https://m.media-amazon.com/images/I/61Pam1D5x1L._SL1500_.jpg",
+  },
+  {
+    id: 105,
+    title: "Steam Wallet $50",
+    price: 50.0,
+    platform: "PC",
+    image: "https://m.media-amazon.com/images/I/618E5KPTJKL._SL1500_.jpg",
+  },
+  {
+    id: 106,
+    title: "Steam Wallet $100",
+    price: 100.0,
+    platform: "PC",
+    image: "https://m.media-amazon.com/images/I/51cPCREWPcL._SL1500_.jpg",
+  },
 ];
 
 export default games;

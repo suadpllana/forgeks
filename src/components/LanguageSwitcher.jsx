@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Globe } from "lucide-react";
 
@@ -11,6 +11,17 @@ const LANGS = [
 export default function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+  const ref = useRef();
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   function changeLang(code) {
     i18n.changeLanguage(code);
@@ -19,7 +30,7 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div className="lang-switcher" onMouseLeave={() => setOpen(false)}>
+    <div className="lang-switcher" ref={ref}>
       <button
         className="icon-btn lang-btn"
         onClick={() => setOpen((o) => !o)}
@@ -33,6 +44,7 @@ export default function LanguageSwitcher() {
             <button
               key={l.code}
               className={`lang-option ${i18n.language === l.code ? "active" : ""}`}
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => changeLang(l.code)}
             >
               <span className="lang-flag">{l.flag}</span>

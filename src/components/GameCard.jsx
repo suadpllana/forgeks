@@ -24,7 +24,15 @@ export default function GameCard({ game }) {
   return (
     <Link to={`/games/${game.slug}`} className="game-card">
       <div className="game-card-img">
-        <img src={game.image} alt={game.title} loading="lazy" />
+        <img
+          src={game.image}
+          alt={game.title}
+          loading="lazy"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = `https://placehold.co/460x215/13131a/8888a0?text=${encodeURIComponent(game.title)}`;
+          }}
+        />
         {game.discount > 0 && (
           <span className="discount-badge">-{game.discount}%</span>
         )}
@@ -49,7 +57,6 @@ export default function GameCard({ game }) {
         <div className="game-card-rating">
           <Star size={13} fill="var(--accent)" stroke="var(--accent)" />
           <span>{game.rating}</span>
-          <span className="reviews-count">({game.reviews.toLocaleString()})</span>
         </div>
         <div className="game-card-price">
           {game.discount > 0 && (

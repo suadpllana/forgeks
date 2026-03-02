@@ -10,6 +10,7 @@ import {
   BarChart3,
   TrendingUp,
   Megaphone,
+  MessageSquare,
 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import ManageGames from "./ManageGames";
@@ -19,6 +20,7 @@ import ManageGiftCards from "./ManageGiftCards";
 import DashboardHome from "./DashboardHome";
 import AdminAnalytics from "./AdminAnalytics";
 import AdminAnnouncements from "./AdminAnnouncements";
+import AdminSupportMessages from "./AdminSupportMessages";
 
 const TABS = [
   { id: "home", label: "Dashboard", icon: BarChart3 },
@@ -28,6 +30,7 @@ const TABS = [
   { id: "giftcards", label: "Gift Cards", icon: Gift },
   { id: "analytics", label: "Analytics", icon: TrendingUp },
   { id: "announcements", label: "Announcements", icon: Megaphone },
+  { id: "support", label: "Support", icon: MessageSquare },
   { id: "store", label: "Store", icon: LayoutDashboard },
 ];
 
@@ -35,6 +38,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState("home");
   const [admin, setAdmin] = useState(null);
   const [checking, setChecking] = useState(true);
+  const [openMsgCount, setOpenMsgCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,6 +61,12 @@ export default function AdminDashboard() {
       }
       setAdmin({ id: session.user.id, ...profile });
       setChecking(false);
+      // Fetch open support message count
+      const { count } = await supabase
+        .from("support_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "open");
+      setOpenMsgCount(count || 0);
     }
     checkAdmin();
   }, [navigate]);
@@ -93,12 +103,18 @@ export default function AdminDashboard() {
                 if (t.id === "store") {
                   window.open("/", "_blank");
                 } else {
+                  if (t.id === "support") setOpenMsgCount(0);
                   setTab(t.id);
                 }
               }}
             >
               <t.icon size={18} />
               {t.label}
+              {t.id === "support" && openMsgCount > 0 && (
+                <span style={{ marginLeft: "auto", background: "var(--red)", color: "#fff", borderRadius: 999, padding: "1px 7px", fontSize: "0.72rem", fontWeight: 700, lineHeight: 1.6 }}>
+                  {openMsgCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -125,6 +141,7 @@ export default function AdminDashboard() {
         {tab === "giftcards" && <ManageGiftCards />}
         {tab === "analytics" && <AdminAnalytics />}
         {tab === "announcements" && <AdminAnnouncements />}
+        {tab === "support" && <AdminSupportMessages />}
       </main>
     </div>
   );

@@ -94,7 +94,7 @@ export default function Navbar() {
         {/* Utilities */}
         <div className="navbar-utils">
           <LanguageSwitcher />
-          <NotificationBell />
+          {state.user && <NotificationBell />}
           <button
             className="icon-btn"
             onClick={() => navigate("/wishlist")}

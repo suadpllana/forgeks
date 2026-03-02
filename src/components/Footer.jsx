@@ -26,13 +26,18 @@ export default function Footer() {
         </div>
         <div className="footer-links-group">
           <h4>Support</h4>
-          <a href="#!">Help Center</a>
-          <a href="#!">Contact Us</a>
-          <a href="#!">Refund Policy</a>
+          <Link to="/help">Help Center</Link>
+          <Link to="/contact">Contact Us</Link>
+          <Link to="/refund-policy">Refund Policy</Link>
+        </div>
+        <div className="footer-links-group">
+          <h4>Legal</h4>
+          <Link to="/privacy-policy">Privacy Policy</Link>
+          <Link to="/terms">Terms of Service</Link>
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2026 Forge Ks. All rights reserved.</p>
+        <p>&copy; 2026 Forge Ks. All rights reserved. &nbsp;·&nbsp; <Link to="/privacy-policy">Privacy</Link> &nbsp;·&nbsp; <Link to="/refund-policy">Refunds</Link> &nbsp;·&nbsp; <Link to="/contact">Contact</Link></p>
       </div>
     </footer>
   );

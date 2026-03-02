@@ -16,7 +16,15 @@ export default function GiftCards() {
         {giftCards.map((card) => (
           <div key={card.id} className="gift-card">
             <div className="gift-card-img">
-              <img src={card.image} alt={card.title} loading="lazy" />
+              <img
+                src={card.image}
+                alt={card.title}
+                loading="lazy"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = `https://placehold.co/400x220/13131a/8888a0?text=${encodeURIComponent(card.title)}`;
+                }}
+              />
               <span className="platform-tag">{card.platform}</span>
             </div>
             <div className="gift-card-body">

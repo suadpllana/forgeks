@@ -112,7 +112,11 @@ export default function GameDetail() {
         {/* Gallery */}
         <div className="detail-gallery">
           <div className="gallery-main">
-            <img src={allImages[currentImg]} alt={game.title} />
+            <img
+              src={allImages[currentImg]}
+              alt={game.title}
+              onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/920x430/13131a/8888a0?text=${encodeURIComponent(game.title)}`; }}
+            />
             <button
               className="gallery-nav prev"
               onClick={() =>
@@ -139,7 +143,7 @@ export default function GameDetail() {
                 className={`thumb ${i === currentImg ? "active" : ""}`}
                 onClick={() => setCurrentImg(i)}
               >
-                <img src={img} alt="" />
+                <img src={img} alt="" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/120x66/13131a/8888a0?text=...`; }} />
               </button>
             ))}
           </div>
