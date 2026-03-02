@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { Zap, Gift, TrendingUp, Clock, Tag } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import GameCard from "../components/GameCard";
 import { useStore } from "../context/StoreContext";
 
 export default function Home() {
+  const { t } = useTranslation();
   const { state } = useStore();
   const games = state.games;
   const trending = games.filter((g) => g.isTrending).slice(0, 4);
@@ -17,19 +19,17 @@ export default function Home() {
         <div className="hero-bg" />
         <div className="hero-content">
           <span className="hero-badge">
-            <Zap size={14} /> New Releases Every Week
+            <Zap size={14} /> {t("heroTagline")}
           </span>
-          <h1 className="hero-title">LEVEL UP YOUR GAME</h1>
-          <p className="hero-desc">
-            Thousands of titles for PC, PS5 &amp; PS4 — instant delivery to your inbox.
-          </p>
+          <h1 className="hero-title">{t("heroTitle")}</h1>
+          <p className="hero-desc">{t("heroDesc")}</p>
           <div className="hero-actions">
             <Link to="/games" className="btn btn-primary btn-lg">
-              Browse Games
+              {t("browseGames")}
             </Link>
             <Link to="/gift-cards" className="btn btn-outline btn-lg">
               <Gift size={18} />
-              Gift Cards
+              {t("giftCards")}
             </Link>
           </div>
         </div>
@@ -40,10 +40,10 @@ export default function Home() {
       <section className="section">
         <div className="section-header">
           <h2>
-            <TrendingUp size={22} /> Top Games
+            <TrendingUp size={22} /> {t("topGames")}
           </h2>
           <Link to="/games" className="see-all">
-            See all &rarr;
+            {t("seeAll")} &rarr;
           </Link>
         </div>
         <div className="game-grid">
@@ -57,10 +57,10 @@ export default function Home() {
       <section className="section">
         <div className="section-header">
           <h2>
-            <Clock size={22} /> New Releases
+            <Clock size={22} /> {t("newReleases")}
           </h2>
           <Link to="/games" className="see-all">
-            See all &rarr;
+            {t("seeAll")} &rarr;
           </Link>
         </div>
         <div className="game-grid">
@@ -74,10 +74,10 @@ export default function Home() {
       <section className="section">
         <div className="section-header">
           <h2>
-            <Tag size={22} /> On Sale
+            <Tag size={22} /> {t("onSale")}
           </h2>
           <Link to="/games?sale=true" className="see-all">
-            See all &rarr;
+            {t("seeAll")} &rarr;
           </Link>
         </div>
         <div className="game-grid">
@@ -90,10 +90,10 @@ export default function Home() {
       {/* Banner */}
       <section className="promo-banner">
         <div className="promo-content">
-          <h2>🎮 Gift the Joy of Gaming</h2>
-          <p>Send digital gift cards instantly — perfect for every gamer.</p>
+          <h2>🎮 {t("giftJoy")}</h2>
+          <p>{t("giftJoyDesc")}</p>
           <Link to="/gift-cards" className="btn btn-primary">
-            Shop Gift Cards
+            {t("shopGiftCards")}
           </Link>
         </div>
       </section>

@@ -1,16 +1,18 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, CreditCard } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useStore } from "../context/StoreContext";
+import { useTranslation } from "react-i18next";
 
 export default function GiftCards() {
+  const { t } = useTranslation();
   const { state, dispatch } = useStore();
   const giftCards = state.giftCards;
 
   return (
     <div className="gift-cards-page">
       <div className="page-header">
-        <h1>🎁 Gift Cards</h1>
-        <p>Instant digital delivery — send the gift of gaming!</p>
+        <h1>🎁 {t("giftCards")}</h1>
+        <p>{t("giftJoyDesc")}</p>
       </div>
       <div className="gift-grid">
         {giftCards.map((card) => (
@@ -22,7 +24,7 @@ export default function GiftCards() {
                 loading="lazy"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = `https://placehold.co/400x220/13131a/8888a0?text=${encodeURIComponent(card.title)}`;
+                  e.target.src = `https://placehold.co/300x240/13131a/8888a0?text=${encodeURIComponent(card.title)}`;
                 }}
               />
               <span className="platform-tag">{card.platform}</span>
@@ -45,7 +47,7 @@ export default function GiftCards() {
                   })
                 }
               >
-                <ShoppingCart size={14} /> Add to Cart
+                <ShoppingCart size={14} /> {t("addToCart")}
               </button>
             </div>
           </div>

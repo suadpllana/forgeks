@@ -43,10 +43,13 @@ export default function NotificationBell() {
       .limit(30);
 
     if (!error && data) {
-      setNotifications(data);
+      // Filter out notifications the user has cleared
+      const clearedIds = JSON.parse(localStorage.getItem("forgeks-cleared-notifs") || "[]");
+      const visible = data.filter((n) => !clearedIds.includes(n.id));
+      setNotifications(visible);
       // Check read status from local storage
       const readIds = JSON.parse(localStorage.getItem("forgeks-read-notifs") || "[]");
-      setUnreadCount(data.filter((n) => !readIds.includes(n.id)).length);
+      setUnreadCount(visible.filter((n) => !readIds.includes(n.id)).length);
     }
   }
 
@@ -57,8 +60,13 @@ export default function NotificationBell() {
   }
 
   function clearAll() {
+    // Persist cleared IDs so they don't reappear after refresh
     const ids = notifications.map((n) => n.id);
-    localStorage.setItem("forgeks-read-notifs", JSON.stringify(ids));
+    const existing = JSON.parse(localStorage.getItem("forgeks-cleared-notifs") || "[]");
+    const merged = [...new Set([...existing, ...ids])];
+    localStorage.setItem("forgeks-cleared-notifs", JSON.stringify(merged));
+    // Also mark as read
+    localStorage.setItem("forgeks-read-notifs", JSON.stringify(merged));
     setNotifications([]);
     setUnreadCount(0);
     setOpen(false);

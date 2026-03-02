@@ -3,6 +3,7 @@ import { StoreProvider } from "./context/StoreContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import AuthModal from "./components/AuthModal";
+import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import AllGames from "./pages/AllGames";
 import GameDetail from "./pages/GameDetail";
@@ -11,6 +12,7 @@ import Wishlist from "./pages/Wishlist";
 import Orders from "./pages/Orders";
 import GiftCards from "./pages/GiftCards";
 import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
@@ -25,6 +27,7 @@ export default function App() {
   return (
     <StoreProvider>
       <HashRouter>
+        <ScrollToTop />
         <Routes>
           {/* Admin routes — no navbar/footer */}
           <Route path="/admin" element={<AdminLogin />} />
@@ -51,6 +54,7 @@ export default function App() {
                     <Route path="/terms" element={<TermsOfService />} />
                     <Route path="/help" element={<HelpCenter />} />
                     <Route path="/contact" element={<ContactUs />} />
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>
                 <Footer />

@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabase";
 
 export default function ManageOrders() {
   const [orders, setOrders] = useState([]);
+  const [profiles, setProfiles] = useState({});
   const [loading, setLoading] = useState(true);
   const [visibleKeys, setVisibleKeys] = useState({});
 
@@ -13,7 +14,22 @@ export default function ManageOrders() {
       .from("orders")
       .select("*")
       .order("created_at", { ascending: false });
-    setOrders(data || []);
+    const orderList = data || [];
+    setOrders(orderList);
+
+    // Fetch profile info for all unique user IDs
+    const userIds = [...new Set(orderList.map((o) => o.user_id).filter(Boolean))];
+    if (userIds.length > 0) {
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("id, full_name, email")
+        .in("id", userIds);
+      if (profileData) {
+        const map = {};
+        profileData.forEach((p) => { map[p.id] = p; });
+        setProfiles(map);
+      }
+    }
     setLoading(false);
   }
 
@@ -53,7 +69,8 @@ export default function ManageOrders() {
           <thead>
             <tr>
               <th>Order ID</th>
-              <th>User ID</th>
+              <th>Buyer</th>
+              <th>Email</th>
               <th>Items</th>
               <th>Total</th>
               <th>Keys</th>
@@ -61,44 +78,50 @@ export default function ManageOrders() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((o) => (
-              <tr key={o.id}>
-                <td className="mono">{String(o.id).slice(0, 8)}...</td>
-                <td className="mono">{o.user_id ? String(o.user_id).slice(0, 8) : "—"}...</td>
-                <td>
-                  {(o.items || []).map((i, idx) => (
-                    <div key={idx} className="order-item-line">
-                      {i.title} x{i.qty}
-                    </div>
-                  ))}
-                </td>
-                <td className="fw-bold">${Number(o.total).toFixed(2)}</td>
-                <td>
-                  <button
-                    className="btn btn-outline btn-sm"
-                    onClick={() => toggleKey(o.id)}
-                  >
-                    {visibleKeys[o.id] ? (
-                      <EyeOff size={14} />
-                    ) : (
-                      <Eye size={14} />
+            {orders.map((o) => {
+              const profile = profiles[o.user_id];
+              return (
+                <tr key={o.id}>
+                  <td className="mono">{String(o.id).slice(0, 8)}…</td>
+                  <td>{profile?.full_name || <span className="admin-muted">—</span>}</td>
+                  <td className="mono" style={{ fontSize: "0.8rem" }}>
+                    {profile?.email || (o.user_id ? String(o.user_id).slice(0, 8) + "…" : "—")}
+                  </td>
+                  <td>
+                    {(o.items || []).map((i, idx) => (
+                      <div key={idx} className="order-item-line">
+                        {i.title} x{i.qty}
+                      </div>
+                    ))}
+                  </td>
+                  <td className="fw-bold">${Number(o.total).toFixed(2)}</td>
+                  <td>
+                    <button
+                      className="btn btn-outline btn-sm"
+                      onClick={() => toggleKey(o.id)}
+                    >
+                      {visibleKeys[o.id] ? (
+                        <EyeOff size={14} />
+                      ) : (
+                        <Eye size={14} />
+                      )}
+                      {visibleKeys[o.id] ? " Hide" : " Show"}
+                    </button>
+                    {visibleKeys[o.id] && (
+                      <div className="keys-list">
+                        {(o.keys || []).map((k, idx) => (
+                          <div key={idx} className="key-line">
+                            <span>{k.game}:</span>
+                            <code>{k.key}</code>
+                          </div>
+                        ))}
+                      </div>
                     )}
-                    {visibleKeys[o.id] ? " Hide" : " Show"}
-                  </button>
-                  {visibleKeys[o.id] && (
-                    <div className="keys-list">
-                      {(o.keys || []).map((k, idx) => (
-                        <div key={idx} className="key-line">
-                          <span>{k.game}:</span>
-                          <code>{k.key}</code>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </td>
-                <td>{new Date(o.created_at).toLocaleString()}</td>
-              </tr>
-            ))}
+                  </td>
+                  <td>{new Date(o.created_at).toLocaleString()}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

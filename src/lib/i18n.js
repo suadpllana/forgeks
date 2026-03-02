@@ -213,6 +213,24 @@ const resources = {
       english: "English",
       albanian: "Albanian",
       german: "German",
+
+      // Email Notifications (Profile)
+      emailNotifications: "Email Notifications",
+      emailNotificationsDesc: "Receive emails about sales, deals, and order updates.",
+
+      // 404 Page
+      pageNotFound: "Page Not Found",
+      pageNotFoundDesc: "The page you're looking for doesn't exist or has been moved.",
+      goHome: "Go Home",
+
+      // Password Reset
+      resetPassword: "Reset Password",
+      setNewPassword: "Set New Password",
+      newPassword: "New Password",
+      confirmPassword: "Confirm Password",
+      updatePassword: "Update Password",
+      passwordResetSent: "Password reset email sent!",
+      passwordResetDesc: "Click the link in your email to set a new password.",
     },
   },
   sq: {
@@ -426,6 +444,24 @@ const resources = {
       english: "Anglisht",
       albanian: "Shqip",
       german: "Gjermanisht",
+
+      // Email Notifications
+      emailNotifications: "Njoftime me email",
+      emailNotificationsDesc: "Merr email-e për shitje, oferta dhe përditësime porosish.",
+
+      // 404 Page
+      pageNotFound: "Faqja nuk u gjet",
+      pageNotFoundDesc: "Faqja që po kërkoni nuk ekziston ose është zhvendosur.",
+      goHome: "Kryefaqja",
+
+      // Password Reset
+      resetPassword: "Resetoni fjalëkalimin",
+      setNewPassword: "Vendosni fjalëkalim të ri",
+      newPassword: "Fjalëkalim i ri",
+      confirmPassword: "Konfirmo fjalëkalimin",
+      updatePassword: "Përditëso fjalëkalimin",
+      passwordResetSent: "Email-i për resetimin u dërgua!",
+      passwordResetDesc: "Klikoni lidhjen në email-in tuaj për të vendosur fjalëkalim të ri.",
     },
   },
   de: {
@@ -639,6 +675,24 @@ const resources = {
       english: "Englisch",
       albanian: "Albanisch",
       german: "Deutsch",
+
+      // Email Notifications
+      emailNotifications: "E-Mail Benachrichtigungen",
+      emailNotificationsDesc: "Erhalte E-Mails über Angebote, Rabatte und Bestellupdates.",
+
+      // 404 Page
+      pageNotFound: "Seite nicht gefunden",
+      pageNotFoundDesc: "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+      goHome: "Zur Startseite",
+
+      // Password Reset
+      resetPassword: "Passwort zurücksetzen",
+      setNewPassword: "Neues Passwort festlegen",
+      newPassword: "Neues Passwort",
+      confirmPassword: "Passwort bestätigen",
+      updatePassword: "Passwort aktualisieren",
+      passwordResetSent: "Passwort-Reset E-Mail gesendet!",
+      passwordResetDesc: "Klicken Sie auf den Link in Ihrer E-Mail um ein neues Passwort festzulegen.",
     },
   },
 };

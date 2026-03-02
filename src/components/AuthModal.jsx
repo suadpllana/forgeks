@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { X, Mail, Lock, UserIcon, Github, Chrome, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Mail, Lock, UserIcon, Chrome, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { useStore } from "../context/StoreContext";
 import { supabase } from "../lib/supabase";
 
@@ -11,8 +11,27 @@ export default function AuthModal() {
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
-  const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Listen for PASSWORD_RECOVERY event and switch to reset mode
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setMode("set-password");
+        dispatch({ type: "OPEN_AUTH_MODAL", payload: "set-password" });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Sync mode when authMode changes externally
+  useEffect(() => {
+    setMode(state.authMode);
+  }, [state.authMode]);
 
   if (!state.authModalOpen) return null;
 
@@ -56,12 +75,36 @@ export default function AuthModal() {
     setError("");
     setLoading(true);
     try {
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-        email: forgotEmail,
-        options: { shouldCreateUser: false },
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+        redirectTo: window.location.href,
       });
-      if (otpError) throw otpError;
-      setMagicLinkSent(true);
+      if (resetError) throw resetError;
+      setResetSent(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSetNewPassword(e) {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+      if (updateError) throw updateError;
+      dispatch({ type: "CLOSE_AUTH_MODAL" });
+      setNewPassword("");
+      setConfirmPassword("");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -104,22 +147,58 @@ export default function AuthModal() {
               Go to Sign In
             </button>
           </div>
-        ) : magicLinkSent ? (
+        ) : resetSent ? (
           <div className="email-sent-screen">
             <CheckCircle size={56} className="email-sent-icon" />
-            <h2>Magic link sent!</h2>
+            <h2>Password reset email sent!</h2>
             <p className="auth-subtitle">
-              A sign-in link has been sent to<br />
+              A reset link has been sent to<br />
               <strong>{forgotEmail}</strong>
             </p>
-            <p className="email-sent-hint">Open the link in your email to sign in instantly — no password needed.</p>
+            <p className="email-sent-hint">Click the link in your email to set a new password.</p>
             <button
               className="btn btn-primary full-width"
-              onClick={() => { setMagicLinkSent(false); setForgotEmail(""); setMode("signin"); setError(""); }}
+              onClick={() => { setResetSent(false); setForgotEmail(""); setMode("signin"); setError(""); }}
             >
               Back to Sign In
             </button>
           </div>
+        ) : mode === "set-password" ? (
+          <>
+            <h2>Set New Password</h2>
+            <p className="auth-subtitle">Choose a strong password for your account.</p>
+            {error && <p style={{ color: "#ff6b6b", fontSize: "0.85rem", textAlign: "center", margin: "0.5rem 0" }}>{error}</p>}
+            <form onSubmit={handleSetNewPassword}>
+              <div className="form-group">
+                <Lock size={16} />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="New password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+                <button type="button" className="pw-toggle" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              <div className="form-group">
+                <Lock size={16} />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary full-width" disabled={loading}>
+                {loading ? "Updating..." : "Update Password"}
+              </button>
+            </form>
+          </>
         ) : mode === "forgot" ? (
           <>
             <button
@@ -128,8 +207,8 @@ export default function AuthModal() {
             >
               ← Back
             </button>
-            <h2>Forgot Password</h2>
-            <p className="auth-subtitle">Enter your email and we'll send you a magic sign-in link.</p>
+            <h2>Reset Password</h2>
+            <p className="auth-subtitle">Enter your email and we'll send you a password reset link.</p>
             {error && <p style={{ color: "#ff6b6b", fontSize: "0.85rem", textAlign: "center", margin: "0.5rem 0" }}>{error}</p>}
             <form onSubmit={handleForgotPassword}>
               <div className="form-group">
@@ -143,7 +222,7 @@ export default function AuthModal() {
                 />
               </div>
               <button type="submit" className="btn btn-primary full-width" disabled={loading}>
-                {loading ? "Sending..." : "Send Magic Link"}
+                {loading ? "Sending..." : "Send Reset Link"}
               </button>
             </form>
           </>
@@ -197,13 +276,16 @@ export default function AuthModal() {
           <div className="form-group">
             <Lock size={16} />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
               minLength={6}
             />
+            <button type="button" className="pw-toggle" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
           </div>
           <button type="submit" className="btn btn-primary full-width" disabled={loading}>
             {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}

@@ -9,6 +9,8 @@ import {
   Edit3,
   Save,
   X,
+  Bell,
+  BellOff,
 } from "lucide-react";
 import { useStore } from "../context/StoreContext";
 import { supabase } from "../lib/supabase";
@@ -22,6 +24,8 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [profile, setProfile] = useState(null);
+  const [emailNotif, setEmailNotif] = useState(false);
+  const [notifSaving, setNotifSaving] = useState(false);
 
   useEffect(() => {
     if (state.user) {
@@ -36,18 +40,19 @@ export default function Profile() {
       .select("*")
       .eq("id", state.user.id)
       .single();
-    if (data) setProfile(data);
+    if (data) {
+      setProfile(data);
+      setEmailNotif(data.email_notifications ?? false);
+    }
   }
 
   async function handleSave() {
     setSaving(true);
     setMessage("");
     try {
-      // Update auth metadata
       await supabase.auth.updateUser({
         data: { full_name: form.name },
       });
-      // Update profiles table
       await supabase
         .from("profiles")
         .update({ full_name: form.name })
@@ -63,6 +68,24 @@ export default function Profile() {
       setMessage(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleEmailNotifToggle() {
+    const newVal = !emailNotif;
+    setEmailNotif(newVal);
+    setNotifSaving(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ email_notifications: newVal })
+        .eq("id", state.user.id);
+      if (error) {
+        // Column may not exist yet — silently revert
+        setEmailNotif(!newVal);
+      }
+    } finally {
+      setNotifSaving(false);
     }
   }
 
@@ -174,6 +197,29 @@ export default function Profile() {
               <span className="stat-label">{t("totalSpent")}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Email Notifications */}
+      <div className="profile-notif-section">
+        <div className="profile-notif-card">
+          <div className="profile-notif-info">
+            <div className="profile-notif-icon">
+              {emailNotif ? <Bell size={22} /> : <BellOff size={22} />}
+            </div>
+            <div>
+              <h3>{t("emailNotifications")}</h3>
+              <p>{t("emailNotificationsDesc")}</p>
+            </div>
+          </div>
+          <button
+            className={`toggle-btn ${emailNotif ? "on" : "off"}`}
+            onClick={handleEmailNotifToggle}
+            disabled={notifSaving}
+            aria-label="Toggle email notifications"
+          >
+            <span className="toggle-thumb" />
+          </button>
         </div>
       </div>
 
