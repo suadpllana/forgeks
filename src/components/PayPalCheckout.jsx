@@ -45,7 +45,14 @@ export default function PayPalCheckout({ total, onSuccess, onCancel }) {
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ total }),
                 });
-                const data = await res.json();
+                const text = await res.text();
+                let data;
+                try {
+                  data = JSON.parse(text);
+                } catch {
+                  console.error("Non-JSON response from create-order:", text);
+                  throw new Error(t("paymentFailed"));
+                }
                 if (!res.ok || !data.id) {
                   const errMsg = data.error || t("paymentFailed");
                   setError(errMsg);
@@ -65,7 +72,15 @@ export default function PayPalCheckout({ total, onSuccess, onCancel }) {
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ orderID: data.orderID }),
                 });
-                const details = await res.json();
+                const text = await res.text();
+                let details;
+                try {
+                  details = JSON.parse(text);
+                } catch {
+                  console.error("Non-JSON response from capture-order:", text);
+                  setError(t("paymentFailed"));
+                  return;
+                }
                 if (res.ok && details.status === "COMPLETED") {
                   onSuccess(details);
                 } else {

@@ -215,23 +215,23 @@ export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "di
     game: i.title,
     key: `XXXX-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
   }));
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: { message: "You must be logged in to place an order." } };
+
   const { data, error } = await supabase
     .from("orders")
-    .insert({ items: cart, total, keys, payment_method: paymentMethod })
+    .insert({ user_id: user.id, items: cart, total, keys, payment_method: paymentMethod })
     .select()
     .single();
   if (error) return { error };
 
   // Send order notification to user
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) {
-    await supabase.from("notifications").insert({
-      user_id: user.id,
-      type: "order",
-      title: "Order Confirmed!",
-      message: `Your order of $${total.toFixed(2)} has been placed. ${keys.length} game key(s) are ready.`,
-    });
-  }
+  await supabase.from("notifications").insert({
+    user_id: user.id,
+    type: "order",
+    title: "Order Confirmed!",
+    message: `Your order of $${total.toFixed(2)} has been placed. ${keys.length} game key(s) are ready.`,
+  });
 
   return {
     order: {
