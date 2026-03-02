@@ -63,8 +63,8 @@ export default function ManageOrders() {
           <tbody>
             {orders.map((o) => (
               <tr key={o.id}>
-                <td className="mono">{o.id.slice(0, 8)}...</td>
-                <td className="mono">{o.user_id?.slice(0, 8)}...</td>
+                <td className="mono">{String(o.id).slice(0, 8)}...</td>
+                <td className="mono">{o.user_id ? String(o.user_id).slice(0, 8) : "—"}...</td>
                 <td>
                   {(o.items || []).map((i, idx) => (
                     <div key={idx} className="order-item-line">

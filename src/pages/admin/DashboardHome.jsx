@@ -119,8 +119,8 @@ export default function DashboardHome() {
             <tbody>
               {recentOrders.map((o) => (
                 <tr key={o.id}>
-                  <td className="mono">{o.id.slice(0, 8)}...</td>
-                  <td className="mono">{o.user_id?.slice(0, 8)}...</td>
+                  <td className="mono">{String(o.id).slice(0, 8)}...</td>
+                  <td className="mono">{o.user_id ? String(o.user_id).slice(0, 8) : "—"}...</td>
                   <td>${Number(o.total).toFixed(2)}</td>
                   <td>{(o.items || []).length} items</td>
                   <td>{new Date(o.created_at).toLocaleDateString()}</td>

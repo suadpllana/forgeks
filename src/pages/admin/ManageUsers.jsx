@@ -66,7 +66,7 @@ export default function ManageUsers() {
         <tbody>
           {users.map((u) => (
             <tr key={u.id} className={u.is_banned ? "row-banned" : ""}>
-              <td className="mono">{u.id.slice(0, 8)}...</td>
+              <td className="mono">{String(u.id).slice(0, 8)}...</td>
               <td>{u.full_name || "—"}</td>
               <td>{u.email}</td>
               <td>

@@ -9,6 +9,22 @@ export default function PayPalCheckout({ total, onSuccess, onCancel }) {
   const { t } = useTranslation();
   const [error, setError] = useState("");
 
+  if (!PAYPAL_CLIENT_ID) {
+    return (
+      <div className="modal-overlay" onClick={onCancel}>
+        <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
+          <button className="modal-close" onClick={onCancel}>
+            <X size={20} />
+          </button>
+          <h2>{t("payWithPaypal")}</h2>
+          <p className="payment-error">
+            PayPal is not configured. Please set the VITE_PAYPAL_CLIENT_ID environment variable.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="modal-overlay" onClick={onCancel}>
       <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
