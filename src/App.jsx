@@ -10,8 +10,10 @@ import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Orders from "./pages/Orders";
 import GiftCards from "./pages/GiftCards";
+import Profile from "./pages/Profile";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import "./lib/i18n";
 import "./App.css";
 
 export default function App() {
@@ -38,6 +40,7 @@ export default function App() {
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/gift-cards" element={<GiftCards />} />
+                    <Route path="/profile" element={<Profile />} />
                   </Routes>
                 </main>
                 <Footer />

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, LayoutGrid, List } from "lucide-react";
 import GameCard from "../components/GameCard";
 import { useStore } from "../context/StoreContext";
 
@@ -21,6 +21,7 @@ export default function AllGames() {
   const [onSaleOnly, setOnSaleOnly] = useState(false);
   const [sort, setSort] = useState("relevance");
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState("grid");
 
   function togglePlatform(p) {
     setPlatforms((prev) =>
@@ -103,6 +104,22 @@ export default function AllGames() {
           >
             <SlidersHorizontal size={16} /> Filters
           </button>
+          <div className="view-toggle">
+            <button
+              className={`view-toggle-btn ${viewMode === "grid" ? "active" : ""}`}
+              onClick={() => setViewMode("grid")}
+              title="Grid view"
+            >
+              <LayoutGrid size={17} />
+            </button>
+            <button
+              className={`view-toggle-btn ${viewMode === "list" ? "active" : ""}`}
+              onClick={() => setViewMode("list")}
+              title="List view"
+            >
+              <List size={17} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -150,8 +167,8 @@ export default function AllGames() {
           </div>
         </aside>
 
-        {/* Grid */}
-        <div className="game-grid catalog-grid">
+        {/* Grid / List */}
+        <div className={viewMode === "list" ? "game-list" : "game-grid catalog-grid"}>
           {filtered.length === 0 ? (
             <div className="empty-state">
               <p>No games found matching your criteria.</p>

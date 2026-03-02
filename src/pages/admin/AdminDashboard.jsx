@@ -8,6 +8,8 @@ import {
   LayoutDashboard,
   LogOut,
   BarChart3,
+  TrendingUp,
+  Megaphone,
 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import ManageGames from "./ManageGames";
@@ -15,6 +17,8 @@ import ManageUsers from "./ManageUsers";
 import ManageOrders from "./ManageOrders";
 import ManageGiftCards from "./ManageGiftCards";
 import DashboardHome from "./DashboardHome";
+import AdminAnalytics from "./AdminAnalytics";
+import AdminAnnouncements from "./AdminAnnouncements";
 
 const TABS = [
   { id: "home", label: "Dashboard", icon: BarChart3 },
@@ -22,6 +26,9 @@ const TABS = [
   { id: "users", label: "Users", icon: Users },
   { id: "orders", label: "Orders", icon: ShoppingBag },
   { id: "giftcards", label: "Gift Cards", icon: Gift },
+  { id: "analytics", label: "Analytics", icon: TrendingUp },
+  { id: "announcements", label: "Announcements", icon: Megaphone },
+  { id: "store", label: "Store", icon: LayoutDashboard },
 ];
 
 export default function AdminDashboard() {
@@ -82,7 +89,13 @@ export default function AdminDashboard() {
             <button
               key={t.id}
               className={`admin-nav-item ${tab === t.id ? "active" : ""}`}
-              onClick={() => setTab(t.id)}
+              onClick={() => {
+                if (t.id === "store") {
+                  window.open("/", "_blank");
+                } else {
+                  setTab(t.id);
+                }
+              }}
             >
               <t.icon size={18} />
               {t.label}
@@ -110,6 +123,8 @@ export default function AdminDashboard() {
         {tab === "users" && <ManageUsers />}
         {tab === "orders" && <ManageOrders />}
         {tab === "giftcards" && <ManageGiftCards />}
+        {tab === "analytics" && <AdminAnalytics />}
+        {tab === "announcements" && <AdminAnnouncements />}
       </main>
     </div>
   );

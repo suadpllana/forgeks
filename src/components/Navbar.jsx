@@ -11,8 +11,12 @@ import {
 } from "lucide-react";
 import { useStore } from "../context/StoreContext";
 import { supabase } from "../lib/supabase";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const { state, dispatch } = useStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
@@ -35,11 +39,11 @@ export default function Navbar() {
   const cartCount = state.cart.reduce((s, i) => s + i.qty, 0);
 
   const links = [
-    { to: "/", label: "Home" },
-    { to: "/games", label: "All Games" },
-    { to: "/gift-cards", label: "Gift Cards" },
-    { to: "/wishlist", label: "Wishlist" },
-    { to: "/orders", label: "My Orders" },
+    { to: "/", label: t("home") },
+    { to: "/games", label: t("allGames") },
+    { to: "/gift-cards", label: t("giftCards") },
+    { to: "/wishlist", label: t("wishlist") },
+    { to: "/orders", label: t("myOrders") },
   ];
 
   function handleSearch(e) {
@@ -79,7 +83,7 @@ export default function Navbar() {
           <input
             ref={searchRef}
             type="text"
-            placeholder="Search for games..."
+            placeholder={t("searchPlaceholder")}
             value={state.searchQuery}
             onChange={handleSearch}
             onFocus={() => setSearchFocused(true)}
@@ -89,10 +93,12 @@ export default function Navbar() {
 
         {/* Utilities */}
         <div className="navbar-utils">
+          <LanguageSwitcher />
+          <NotificationBell />
           <button
             className="icon-btn"
             onClick={() => navigate("/wishlist")}
-            title="Wishlist"
+            title={t("wishlist")}
           >
             <Heart size={20} />
             {state.wishlist.length > 0 && (
@@ -102,7 +108,7 @@ export default function Navbar() {
           <button
             className="icon-btn"
             onClick={() => navigate("/cart")}
-            title="Cart"
+            title={t("cart")}
           >
             <ShoppingCart size={20} />
             {cartCount > 0 && <span className="badge">{cartCount}</span>}
@@ -122,13 +128,22 @@ export default function Navbar() {
                   <div className="user-dropdown-name">{state.user.name}</div>
                   <button
                     className="user-dropdown-item"
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      navigate("/profile");
+                    }}
+                  >
+                    {t("profile")}
+                  </button>
+                  <button
+                    className="user-dropdown-item"
                     onClick={async () => {
                       setUserMenuOpen(false);
                       await supabase.auth.signOut();
                       dispatch({ type: "LOGOUT" });
                     }}
                   >
-                    Sign Out
+                    {t("signOut")}
                   </button>
                 </div>
               )}
@@ -141,8 +156,8 @@ export default function Navbar() {
               }
             >
               <User size={16} />
-              <span className="desktop-only">Sign In / Register</span>
-              <span className="mobile-only-inline">Sign In</span>
+              <span className="desktop-only">{t("signInRegister")}</span>
+              <span className="mobile-only-inline">{t("signIn")}</span>
             </button>
           )}
 

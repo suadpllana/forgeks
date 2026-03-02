@@ -1,0 +1,90 @@
+import { useState } from "react";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID;
+
+export default function PayPalCheckout({ total, onSuccess, onCancel }) {
+  const { t } = useTranslation();
+  const [error, setError] = useState("");
+
+  return (
+    <div className="modal-overlay" onClick={onCancel}>
+      <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onCancel}>
+          <X size={20} />
+        </button>
+        <h2>{t("payWithPaypal")}</h2>
+        <p className="payment-total">${total.toFixed(2)}</p>
+
+        {error && <p className="payment-error">{error}</p>}
+
+        <PayPalScriptProvider
+          options={{
+            "client-id": PAYPAL_CLIENT_ID,
+            currency: "USD",
+            intent: "capture",
+            "disable-funding": "credit,card",
+          }}
+        >
+          <PayPalButtons
+            style={{
+              layout: "vertical",
+              color: "gold",
+              shape: "rect",
+              label: "paypal",
+              height: 45,
+            }}
+            createOrder={async () => {
+              try {
+                setError("");
+                // Call Netlify serverless function to create the order server-side
+                const res = await fetch("/.netlify/functions/paypal-create-order", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ total }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.id) {
+                  const errMsg = data.error || t("paymentFailed");
+                  setError(errMsg);
+                  throw new Error(errMsg);
+                }
+                return data.id;
+              } catch (err) {
+                setError(err.message || t("paymentFailed"));
+                throw err;
+              }
+            }}
+            onApprove={async (data) => {
+              try {
+                // Call Netlify serverless function to capture the order server-side
+                const res = await fetch("/.netlify/functions/paypal-capture-order", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ orderID: data.orderID }),
+                });
+                const details = await res.json();
+                if (res.ok && details.status === "COMPLETED") {
+                  onSuccess(details);
+                } else {
+                  setError(details.error || t("paymentFailed"));
+                }
+              } catch (err) {
+                setError(t("paymentFailed"));
+              }
+            }}
+            onError={(err) => {
+              console.error("PayPal error:", err);
+              setError(t("paymentFailed"));
+            }}
+            onCancel={() => {
+              onCancel();
+            }}
+          />
+        </PayPalScriptProvider>
+      </div>
+    </div>
+  );
+}

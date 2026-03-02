@@ -208,18 +208,31 @@ export async function removeFromWishlistDB(gameId) {
   return error;
 }
 
-export async function placeOrderDB(cart) {
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "direct") {
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const total = Math.max(0, subtotal - discountAmount);
   const keys = cart.map((i) => ({
     game: i.title,
     key: `XXXX-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
   }));
   const { data, error } = await supabase
     .from("orders")
-    .insert({ items: cart, total, keys })
+    .insert({ items: cart, total, keys, payment_method: paymentMethod })
     .select()
     .single();
   if (error) return { error };
+
+  // Send order notification to user
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    await supabase.from("notifications").insert({
+      user_id: user.id,
+      type: "order",
+      title: "Order Confirmed!",
+      message: `Your order of $${total.toFixed(2)} has been placed. ${keys.length} game key(s) are ready.`,
+    });
+  }
+
   return {
     order: {
       id: data.id,
@@ -227,6 +240,38 @@ export async function placeOrderDB(cart) {
       total: data.total,
       date: data.created_at,
       keys: data.keys,
+    },
+  };
+}
+
+// Discount code validation
+export async function validateDiscountCode(code) {
+  const { data, error } = await supabase
+    .from("discount_codes")
+    .select("*")
+    .eq("code", code.toUpperCase())
+    .eq("active", true)
+    .single();
+
+  if (error || !data) return { valid: false };
+
+  // Check expiry
+  if (data.expires_at && new Date(data.expires_at) < new Date()) {
+    return { valid: false };
+  }
+
+  // Check usage limit
+  if (data.max_uses && data.times_used >= data.max_uses) {
+    return { valid: false };
+  }
+
+  return {
+    valid: true,
+    discount: {
+      id: data.id,
+      code: data.code,
+      type: data.type, // 'percent' or 'fixed'
+      value: Number(data.value),
     },
   };
 }

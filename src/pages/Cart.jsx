@@ -1,37 +1,89 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft } from "lucide-react";
-import { useStore, placeOrderDB } from "../context/StoreContext";
+import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft, CreditCard, Tag } from "lucide-react";
+import { useStore, placeOrderDB, validateDiscountCode } from "../context/StoreContext";
+import { useTranslation } from "react-i18next";
+import PayPalCheckout from "../components/PayPalCheckout";
+import CryptoCheckout from "../components/CryptoCheckout";
 
 export default function Cart() {
+  const { t } = useTranslation();
   const { state, dispatch } = useStore();
   const [placing, setPlacing] = useState(false);
-  const total = state.cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const [paymentMode, setPaymentMode] = useState(null); // null | 'paypal' | 'crypto'
+  const [discountCode, setDiscountCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
+  const [discountMsg, setDiscountMsg] = useState({ text: "", type: "" });
+  const [applyingCode, setApplyingCode] = useState(false);
 
-  async function handleCheckout() {
+  const subtotal = state.cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  let discountAmount = 0;
+  if (appliedDiscount) {
+    if (appliedDiscount.type === "percent") {
+      discountAmount = (subtotal * appliedDiscount.value) / 100;
+    } else {
+      discountAmount = appliedDiscount.value;
+    }
+    discountAmount = Math.min(discountAmount, subtotal);
+  }
+  const total = Math.max(0, subtotal - discountAmount);
+
+  async function handleApplyDiscount() {
+    if (!discountCode.trim()) return;
+    setApplyingCode(true);
+    setDiscountMsg({ text: "", type: "" });
+
+    const result = await validateDiscountCode(discountCode.trim());
+    if (result.valid) {
+      setAppliedDiscount(result.discount);
+      setDiscountMsg({ text: t("discountApplied"), type: "success" });
+    } else {
+      setDiscountMsg({ text: t("invalidCode"), type: "error" });
+    }
+    setApplyingCode(false);
+  }
+
+  async function completeOrder(paymentMethod = "direct") {
+    setPlacing(true);
+    const { order, error } = await placeOrderDB(state.cart, discountAmount, paymentMethod);
+    setPlacing(false);
+    if (error) {
+      alert(t("orderFailed") + error.message);
+      return;
+    }
+    dispatch({ type: "ADD_ORDER", payload: order });
+    setAppliedDiscount(null);
+    setDiscountCode("");
+    alert("🎉 " + t("orderPlaced"));
+  }
+
+  async function handleDirectCheckout() {
     if (!state.user) {
       dispatch({ type: "OPEN_AUTH_MODAL", payload: "signin" });
       return;
     }
-    setPlacing(true);
-    const { order, error } = await placeOrderDB(state.cart);
-    setPlacing(false);
-    if (error) {
-      alert("Failed to place order: " + error.message);
-      return;
-    }
-    dispatch({ type: "ADD_ORDER", payload: order });
-    alert("🎉 Order placed! Check your keys in My Orders.");
+    await completeOrder("direct");
+  }
+
+  async function handlePayPalSuccess(details) {
+    setPaymentMode(null);
+    await completeOrder("paypal");
+  }
+
+  async function handleCryptoSuccess(details) {
+    setPaymentMode(null);
+    await completeOrder("crypto");
   }
 
   if (state.cart.length === 0)
     return (
       <div className="empty-page">
         <ShoppingBag size={64} strokeWidth={1} />
-        <h2>Your cart is empty</h2>
-        <p>Browse our catalog and add some games!</p>
+        <h2>{t("yourCartEmpty")}</h2>
+        <p>{t("browseAddGames")}</p>
         <Link to="/games" className="btn btn-primary">
-          Browse Games
+          {t("browseGames")}
         </Link>
       </div>
     );
@@ -39,9 +91,9 @@ export default function Cart() {
   return (
     <div className="cart-page">
       <Link to="/games" className="back-link">
-        <ArrowLeft size={16} /> Continue Shopping
+        <ArrowLeft size={16} /> {t("continueShopping")}
       </Link>
-      <h1>Shopping Cart ({state.cart.length})</h1>
+      <h1>{t("shoppingCart")} ({state.cart.length})</h1>
 
       <div className="cart-layout">
         <div className="cart-items">
@@ -99,24 +151,106 @@ export default function Cart() {
         </div>
 
         <div className="cart-summary">
-          <h3>Order Summary</h3>
-          <div className="summary-row">
-            <span>Subtotal</span>
-            <span>${total.toFixed(2)}</span>
+          <h3>{t("orderSummary")}</h3>
+
+          {/* Discount code */}
+          <div className="discount-section">
+            <div className="discount-input-row">
+              <Tag size={16} />
+              <input
+                type="text"
+                placeholder={t("discountCode")}
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleApplyDiscount()}
+              />
+              <button
+                className="btn btn-sm btn-outline"
+                onClick={handleApplyDiscount}
+                disabled={applyingCode}
+              >
+                {t("apply")}
+              </button>
+            </div>
+            {discountMsg.text && (
+              <p className={`discount-msg ${discountMsg.type}`}>
+                {discountMsg.text}
+              </p>
+            )}
           </div>
+
           <div className="summary-row">
-            <span>Delivery</span>
-            <span className="free">FREE (Digital)</span>
+            <span>{t("subtotal")}</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+          {discountAmount > 0 && (
+            <div className="summary-row discount-row">
+              <span>{t("discount")}</span>
+              <span className="discount-value">-${discountAmount.toFixed(2)}</span>
+            </div>
+          )}
+          <div className="summary-row">
+            <span>{t("delivery")}</span>
+            <span className="free">{t("freeDigital")}</span>
           </div>
           <div className="summary-row total">
-            <span>Total</span>
+            <span>{t("total")}</span>
             <span>${total.toFixed(2)}</span>
           </div>
-          <button className="btn btn-primary full-width" onClick={handleCheckout} disabled={placing}>
-            {placing ? "Placing order..." : `Checkout — $${total.toFixed(2)}`}
-          </button>
+
+          {/* Payment options */}
+          <div className="payment-options">
+            <button
+              className="btn btn-primary full-width"
+              onClick={handleDirectCheckout}
+              disabled={placing}
+            >
+              <CreditCard size={16} />
+              {placing ? t("placingOrder") : `${t("directCheckout")} — $${total.toFixed(2)}`}
+            </button>
+            <button
+              className="btn btn-paypal full-width"
+              onClick={() => {
+                if (!state.user) {
+                  dispatch({ type: "OPEN_AUTH_MODAL", payload: "signin" });
+                  return;
+                }
+                setPaymentMode("paypal");
+              }}
+            >
+              <span className="paypal-icon">P</span> {t("payWithPaypal")}
+            </button>
+            <button
+              className="btn btn-crypto full-width"
+              onClick={() => {
+                if (!state.user) {
+                  dispatch({ type: "OPEN_AUTH_MODAL", payload: "signin" });
+                  return;
+                }
+                setPaymentMode("crypto");
+              }}
+            >
+              ₿ {t("payWithCrypto")}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Payment modals */}
+      {paymentMode === "paypal" && (
+        <PayPalCheckout
+          total={total}
+          onSuccess={handlePayPalSuccess}
+          onCancel={() => setPaymentMode(null)}
+        />
+      )}
+      {paymentMode === "crypto" && (
+        <CryptoCheckout
+          total={total}
+          onSuccess={handleCryptoSuccess}
+          onCancel={() => setPaymentMode(null)}
+        />
+      )}
     </div>
   );
 }
