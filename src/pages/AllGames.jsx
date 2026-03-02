@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { SlidersHorizontal, LayoutGrid, List } from "lucide-react";
+import { SlidersHorizontal, LayoutGrid, List, Loader } from "lucide-react";
 import GameCard from "../components/GameCard";
 import { useStore } from "../context/StoreContext";
 
@@ -81,7 +81,7 @@ export default function AllGames() {
     }
 
     return list;
-  }, [state.searchQuery, platforms, categories, onSaleOnly, sort]);
+  }, [games, state.searchQuery, platforms, categories, onSaleOnly, sort]);
 
   return (
     <div className="all-games-page">
@@ -171,7 +171,12 @@ export default function AllGames() {
 
         {/* Grid / List */}
         <div className={viewMode === "list" ? "game-list" : "game-grid catalog-grid"}>
-          {filtered.length === 0 ? (
+          {state.gamesLoading ? (
+            <div className="empty-state">
+              <Loader size={28} className="spin" style={{ marginBottom: 12 }} />
+              <p>Loading games…</p>
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="empty-state">
               <p>No games found matching your criteria.</p>
             </div>
