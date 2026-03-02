@@ -3,7 +3,6 @@ import {
   useContext,
   useReducer,
   useEffect,
-  useCallback,
 } from "react";
 import { supabase } from "../lib/supabase";
 
@@ -186,6 +185,9 @@ async function fetchOrders(dispatch) {
       total: o.total,
       date: o.created_at,
       keys: o.keys,
+      status: o.status || "completed",
+      payment_method: o.payment_method,
+      crypto_details: o.crypto_details || null,
     }));
     dispatch({ type: "SET_ORDERS", payload: mapped });
   }
@@ -208,19 +210,32 @@ export async function removeFromWishlistDB(gameId) {
   return error;
 }
 
-export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "direct") {
+export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "direct", cryptoDetails = null) {
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const total = Math.max(0, subtotal - discountAmount);
-  const keys = cart.map((i) => ({
-    game: i.title,
-    key: `XXXX-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
-  }));
+  const isCrypto = paymentMethod === "crypto";
+
+  // For crypto orders: no keys until admin approves. For others: generate immediately.
+  const keys = isCrypto
+    ? []
+    : cart.map((i) => ({
+        game: i.title,
+        key: `XXXX-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+      }));
+
+  const status = isCrypto ? "pending_crypto" : "completed";
+
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: { message: "You must be logged in to place an order." } };
 
+  const insertPayload = { user_id: user.id, items: cart, total, keys, payment_method: paymentMethod, status };
+  if (isCrypto && cryptoDetails) {
+    insertPayload.crypto_details = cryptoDetails; // { crypto: "BTC", network: "BTC" }
+  }
+
   const { data, error } = await supabase
     .from("orders")
-    .insert({ user_id: user.id, items: cart, total, keys, payment_method: paymentMethod })
+    .insert(insertPayload)
     .select()
     .single();
   if (error) return { error };
@@ -229,8 +244,10 @@ export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "di
   await supabase.from("notifications").insert({
     user_id: user.id,
     type: "order",
-    title: "Order Confirmed!",
-    message: `Your order of $${total.toFixed(2)} has been placed. ${keys.length} game key(s) are ready.`,
+    title: isCrypto ? "Crypto Order Received" : "Order Confirmed!",
+    message: isCrypto
+      ? `Your crypto order of $${total.toFixed(2)} is pending verification. Keys will be delivered once payment is confirmed.`
+      : `Your order of $${total.toFixed(2)} has been placed. ${keys.length} game key(s) are ready.`,
   });
 
   return {
@@ -240,6 +257,9 @@ export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "di
       total: data.total,
       date: data.created_at,
       keys: data.keys,
+      status: data.status,
+      payment_method: data.payment_method,
+      crypto_details: data.crypto_details || null,
     },
   };
 }

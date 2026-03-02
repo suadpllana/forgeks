@@ -1,11 +1,78 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Package, Eye, EyeOff, ClipboardCopy } from "lucide-react";
+import { Package, Eye, EyeOff, ClipboardCopy, Clock, CheckCircle, XCircle, Timer, Copy, Check } from "lucide-react";
 import { useStore } from "../context/StoreContext";
+import { useTranslation } from "react-i18next";
+import { supabase } from "../lib/supabase";
 
+// ── Countdown timer component ───────────────────────────────────
+function CryptoCountdown({ orderDate, orderId, onExpired }) {
+  const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+  const deadline = new Date(orderDate).getTime() + TIMEOUT_MS;
+
+  const calcRemaining = useCallback(() => Math.max(0, deadline - Date.now()), [deadline]);
+  const [remaining, setRemaining] = useState(calcRemaining);
+
+  useEffect(() => {
+    if (remaining <= 0) {
+      onExpired(orderId);
+      return;
+    }
+    const timer = setInterval(() => {
+      const r = calcRemaining();
+      setRemaining(r);
+      if (r <= 0) {
+        clearInterval(timer);
+        onExpired(orderId);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [remaining, calcRemaining, orderId, onExpired]);
+
+  const mins = Math.floor(remaining / 60000);
+  const secs = Math.floor((remaining % 60000) / 1000);
+  const isUrgent = remaining < 5 * 60 * 1000; // under 5 min
+
+  return (
+    <span className={`crypto-timer ${isUrgent ? "urgent" : ""}`}>
+      <Timer size={14} />
+      {String(mins).padStart(2, "0")}:{String(secs).padStart(2, "0")}
+    </span>
+  );
+}
+
+// ── Orders page ─────────────────────────────────────────────────
 export default function Orders() {
   const { state, dispatch } = useStore();
+  const { t } = useTranslation();
   const [visibleKeys, setVisibleKeys] = useState({});
+  const [copiedAddress, setCopiedAddress] = useState(null);
+
+  function copyAddress(orderId, address) {
+    navigator.clipboard.writeText(address);
+    setCopiedAddress(orderId);
+    setTimeout(() => setCopiedAddress(null), 2000);
+  }
+
+  // Auto-reject expired crypto orders
+  const handleExpired = useCallback(async (orderId) => {
+    // Update in DB
+    await supabase
+      .from("orders")
+      .update({ status: "rejected" })
+      .eq("id", orderId)
+      .eq("status", "pending_crypto"); // only if still pending
+
+    // Update local state
+    dispatch({
+      type: "SET_ORDERS",
+      payload: state.orders.map((o) =>
+        o.id === orderId && o.status === "pending_crypto"
+          ? { ...o, status: "rejected" }
+          : o
+      ),
+    });
+  }, [dispatch, state.orders]);
 
   function toggleKey(orderId, idx) {
     const k = `${orderId}-${idx}`;
@@ -20,8 +87,8 @@ export default function Orders() {
     return (
       <div className="empty-page">
         <Package size={64} strokeWidth={1} />
-        <h2>Sign in to view your orders</h2>
-        <p>Your digital keys will appear here after purchase.</p>
+        <h2>{t("signInOrders")}</h2>
+        <p>{t("keysAppearHere")}</p>
         <button
           className="btn btn-primary"
           onClick={() =>
@@ -38,10 +105,10 @@ export default function Orders() {
     return (
       <div className="empty-page">
         <Package size={64} strokeWidth={1} />
-        <h2>No orders yet</h2>
-        <p>Your purchased game keys will appear here.</p>
+        <h2>{t("noOrdersYet")}</h2>
+        <p>{t("purchasedKeysHere")}</p>
         <Link to="/games" className="btn btn-primary">
-          Browse Games
+          {t("browseGames")}
         </Link>
       </div>
     );
@@ -65,8 +132,95 @@ export default function Orders() {
               </div>
               <span className="order-total">${order.total.toFixed(2)}</span>
             </div>
+
+            {/* Status badge for crypto orders */}
+            {order.status === "pending_crypto" && (
+              <div className="order-status-banner pending">
+                <Clock size={16} />
+                <div className="order-status-banner-content">
+                  <span>
+                    {t("awaitingCryptoPayment")}
+                  </span>
+                  <CryptoCountdown
+                    orderDate={order.date}
+                    orderId={order.id}
+                    onExpired={handleExpired}
+                  />
+                </div>
+              </div>
+            )}
+            {order.status === "rejected" && (
+              <div className="order-status-banner rejected">
+                <XCircle size={16} /> {t("paymentNotReceived")}
+              </div>
+            )}
+
             <div className="order-items">
-              {order.keys.map((k, idx) => {
+              {(order.keys || []).length === 0 && order.status === "pending_crypto" ? (
+                <div className="order-crypto-details">
+                  {/* Game names */}
+                  {order.items && order.items.length > 0 && (
+                    <div className="order-crypto-games">
+                      {order.items.map((item, i) => (
+                        <div key={i} className="order-crypto-game-row">
+                          <span className="order-crypto-game-name">{item.title}</span>
+                          <span className="order-crypto-game-qty">×{item.qty || 1}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="order-pending-msg">
+                    <Clock size={18} />
+                    <div className="order-pending-info">
+                      <span>{t("pendingCryptoKeys")}</span>
+                      <span className="order-pending-warning">{t("cryptoAutoReject")}</span>
+                    </div>
+                  </div>
+
+                  {order.crypto_details && (
+                    <div className="order-crypto-payment-info">
+                      <div className="order-crypto-header">
+                        <span className="order-crypto-badge">
+                          {order.crypto_details.cryptoName || order.crypto_details.crypto}
+                        </span>
+                        <span className="order-crypto-network-badge">
+                          {order.crypto_details.networkName || order.crypto_details.network}
+                        </span>
+                      </div>
+                      {order.crypto_details.address && (
+                        <div className="order-crypto-address-section">
+                          <div className="order-crypto-qr">
+                            <img
+                              src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(order.crypto_details.address)}`}
+                              alt="QR Code"
+                              width={100}
+                              height={100}
+                            />
+                          </div>
+                          <div className="order-crypto-address-col">
+                            <div className="order-crypto-address-box">
+                              <code>{order.crypto_details.address}</code>
+                            </div>
+                            <button
+                              className="order-crypto-copy-btn"
+                              onClick={() => copyAddress(order.id, order.crypto_details.address)}
+                            >
+                              {copiedAddress === order.id ? <Check size={14} /> : <Copy size={14} />}
+                              {copiedAddress === order.id ? (t("copied") || "Copied!") : (t("copyAddress") || "Copy Address")}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (order.keys || []).length === 0 && order.status === "rejected" ? (
+                <div className="order-pending-msg rejected-msg">
+                  <XCircle size={18} />
+                  <span>{t("orderCancelledNoPayment")}</span>
+                </div>
+              ) : (order.keys || []).map((k, idx) => {
                 const visible = visibleKeys[`${order.id}-${idx}`];
                 return (
                   <div key={idx} className="order-key-row">

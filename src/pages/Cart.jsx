@@ -44,9 +44,9 @@ export default function Cart() {
     setApplyingCode(false);
   }
 
-  async function completeOrder(paymentMethod = "direct") {
+  async function completeOrder(paymentMethod = "direct", cryptoDetails = null) {
     setPlacing(true);
-    const { order, error } = await placeOrderDB(state.cart, discountAmount, paymentMethod);
+    const { order, error } = await placeOrderDB(state.cart, discountAmount, paymentMethod, cryptoDetails);
     setPlacing(false);
     if (error) {
       alert(t("orderFailed") + error.message);
@@ -73,7 +73,14 @@ export default function Cart() {
 
   async function handleCryptoSuccess(details) {
     setPaymentMode(null);
-    await completeOrder("crypto");
+    await completeOrder("crypto", {
+      crypto: details.crypto,
+      cryptoName: details.cryptoName,
+      network: details.network,
+      networkName: details.networkName,
+      address: details.address,
+    });
+    alert("⏳ " + t("cryptoOrderPending"));
   }
 
   if (state.cart.length === 0)

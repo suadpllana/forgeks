@@ -93,6 +93,10 @@ const resources = {
       cryptoNote: "Payment will be verified within 10–30 minutes. Your keys will appear in My Orders once confirmed.",
       cancelPayment: "Cancel",
       selectCrypto: "Select Cryptocurrency",
+      selectNetwork: "Select Network",
+      fetchingPrice: "Fetching live price…",
+      inCrypto: "in",
+      networkWarning: "Make sure you send only on the {{network}} network. Sending on the wrong network may result in lost funds.",
 
       // Orders
       signInOrders: "Sign in to view your orders",
@@ -100,6 +104,12 @@ const resources = {
       noOrdersYet: "No orders yet",
       purchasedKeysHere: "Your purchased game keys will appear here.",
       orderPlaced: "Order placed! Check your keys in My Orders.",
+      cryptoOrderPending: "Your crypto order has been placed! Keys will appear in My Orders once your payment is verified (usually 10–30 minutes).",
+      awaitingCryptoPayment: "Awaiting crypto payment verification",
+      paymentNotReceived: "Payment not received — order cancelled",
+      pendingCryptoKeys: "Keys will appear here once your crypto payment is verified.",
+      cryptoAutoReject: "If payment is not received within 30 minutes, your order will be automatically cancelled.",
+      orderCancelledNoPayment: "This order was cancelled because payment was not received in time.",
       orderFailed: "Failed to place order: ",
 
       // Wishlist
@@ -324,6 +334,10 @@ const resources = {
       cryptoNote: "Pagesa do të verifikohet brenda 10–30 minutave. Çelësat do të shfaqen te Porositë e mia pasi të konfirmohet.",
       cancelPayment: "Anulo",
       selectCrypto: "Zgjidhni kriptomonedhën",
+      selectNetwork: "Zgjidhni rrjetin",
+      fetchingPrice: "Duke marrë çmimin aktual…",
+      inCrypto: "në",
+      networkWarning: "Sigurohuni që dërgoni vetëm në rrjetin {{network}}. Dërgimi në rrjetin e gabuar mund të rezultojë në humbje fondesh.",
 
       // Orders
       signInOrders: "Hyni për të parë porositë tuaja",
@@ -331,6 +345,12 @@ const resources = {
       noOrdersYet: "Ende pa porosi",
       purchasedKeysHere: "Çelësat e lojërave të blera do të shfaqen këtu.",
       orderPlaced: "Porosia u vendos! Kontrolloni çelësat te Porositë e mia.",
+      cryptoOrderPending: "Porosia juaj me kripto u vendos! Çelësat do të shfaqen te Porositë e mia pasi pagesa të verifikohet (zakonisht 10–30 minuta).",
+      awaitingCryptoPayment: "Duke pritur verifikimin e pagesës me kripto",
+      paymentNotReceived: "Pagesa nuk u mor — porosia u anulua",
+      pendingCryptoKeys: "Çelësat do të shfaqen këtu pasi pagesa juaj me kripto të verifikohet.",
+      cryptoAutoReject: "Nëse pagesa nuk merret brenda 30 minutave, porosia juaj do të anulohet automatikisht.",
+      orderCancelledNoPayment: "Kjo porosi u anulua sepse pagesa nuk u mor në kohë.",
       orderFailed: "Dështoi vendosja e porosisë: ",
 
       // Wishlist
@@ -555,6 +575,10 @@ const resources = {
       cryptoNote: "Die Zahlung wird innerhalb von 10–30 Minuten verifiziert. Ihre Schlüssel erscheinen in Meine Bestellungen nach Bestätigung.",
       cancelPayment: "Abbrechen",
       selectCrypto: "Kryptowährung auswählen",
+      selectNetwork: "Netzwerk auswählen",
+      fetchingPrice: "Live-Preis wird geladen…",
+      inCrypto: "in",
+      networkWarning: "Stellen Sie sicher, dass Sie nur über das {{network}}-Netzwerk senden. Das Senden über das falsche Netzwerk kann zum Verlust der Mittel führen.",
 
       // Orders
       signInOrders: "Anmelden um Ihre Bestellungen zu sehen",
@@ -562,6 +586,12 @@ const resources = {
       noOrdersYet: "Noch keine Bestellungen",
       purchasedKeysHere: "Ihre gekauften Spielschlüssel erscheinen hier.",
       orderPlaced: "Bestellung aufgegeben! Prüfen Sie Ihre Schlüssel in Meine Bestellungen.",
+      cryptoOrderPending: "Ihre Krypto-Bestellung wurde aufgegeben! Schlüssel erscheinen in Meine Bestellungen, sobald Ihre Zahlung verifiziert ist (normalerweise 10–30 Minuten).",
+      awaitingCryptoPayment: "Warten auf Krypto-Zahlungsverifizierung",
+      paymentNotReceived: "Zahlung nicht erhalten — Bestellung storniert",
+      pendingCryptoKeys: "Schlüssel erscheinen hier, sobald Ihre Krypto-Zahlung verifiziert ist.",
+      cryptoAutoReject: "Wenn die Zahlung nicht innerhalb von 30 Minuten eingeht, wird Ihre Bestellung automatisch storniert.",
+      orderCancelledNoPayment: "Diese Bestellung wurde storniert, da die Zahlung nicht rechtzeitig eingegangen ist.",
       orderFailed: "Bestellung fehlgeschlagen: ",
 
       // Wishlist

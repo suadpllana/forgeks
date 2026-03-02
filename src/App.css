@@ -2345,12 +2345,113 @@
   border-color: var(--crypto-color, var(--accent));
   background: var(--bg-input);
 }
+.crypto-option-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+.crypto-option-symbol {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.crypto-chevron {
+  color: var(--text-muted);
+  margin-left: auto;
+  flex-shrink: 0;
+}
 .crypto-icon {
   font-size: 1.5rem;
   width: 32px;
   text-align: center;
   color: var(--crypto-color, var(--accent));
 }
+
+/* Network step */
+.crypto-step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.crypto-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  transition: var(--transition);
+}
+.crypto-back-btn:hover {
+  background: var(--bg-input);
+  border-color: var(--accent);
+}
+.crypto-step-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.crypto-step-network {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(99,102,241,0.12);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.crypto-network-btn {
+  padding: 12px 16px !important;
+}
+.crypto-network-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+.crypto-network-name {
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.crypto-network-tag {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.crypto-amount-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.crypto-amount-usd {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.crypto-amount-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .crypto-payment-details {
   display: flex;
   flex-direction: column;
@@ -2385,6 +2486,25 @@
   letter-spacing: 0.04em;
   color: var(--text-muted);
   margin-bottom: 6px;
+}
+.crypto-qr-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.crypto-qr {
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  padding: 6px;
+  flex-shrink: 0;
+}
+.crypto-address-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
 }
 .crypto-address-box {
   display: flex;
@@ -2430,6 +2550,295 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+/* ============================================
+   ORDER STATUS BADGES & PENDING STATES
+   ============================================ */
+.order-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.order-status-banner.pending {
+  background: rgba(245,158,11,0.1);
+  color: var(--orange);
+  border-bottom: 1px solid rgba(245,158,11,0.2);
+}
+.order-status-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.order-status-banner.rejected {
+  background: rgba(239,68,68,0.08);
+  color: var(--red);
+  border-bottom: 1px solid rgba(239,68,68,0.2);
+}
+.order-pending-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.order-pending-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.order-pending-warning {
+  font-size: 0.82rem;
+  color: var(--red);
+  font-weight: 600;
+}
+.rejected-msg {
+  color: var(--red);
+  opacity: 0.8;
+}
+
+/* ── Order crypto payment details ── */
+.order-crypto-details {
+  padding: 8px 0;
+}
+.order-crypto-games {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.order-crypto-game-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+.order-crypto-game-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text);
+}
+.order-crypto-game-qty {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.order-crypto-payment-info {
+  margin-top: 12px;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.order-crypto-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.order-crypto-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: rgba(247,147,26,0.12);
+  border: 1px solid rgba(247,147,26,0.25);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f7931a;
+}
+.order-crypto-network-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--purple);
+}
+.order-crypto-address-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.order-crypto-qr {
+  flex-shrink: 0;
+  padding: 8px;
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.order-crypto-qr img {
+  display: block;
+  border-radius: 4px;
+}
+.order-crypto-address-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.order-crypto-address-col label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.order-crypto-address-box {
+  padding: 10px 12px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.order-crypto-address-box code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text);
+  word-break: break-all;
+  white-space: normal;
+}
+.order-crypto-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 8px;
+  color: var(--purple);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: fit-content;
+}
+.order-crypto-copy-btn:hover {
+  background: rgba(99,102,241,0.2);
+}
+
+@media (max-width: 500px) {
+  .order-crypto-address-section {
+    flex-direction: column;
+    align-items: center;
+  }
+  .order-crypto-address-col {
+    width: 100%;
+  }
+}
+
+/* Crypto countdown timer */
+.crypto-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  background: rgba(245,158,11,0.15);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 8px;
+  color: var(--orange);
+  white-space: nowrap;
+}
+.crypto-timer.urgent {
+  background: rgba(239,68,68,0.15);
+  border-color: rgba(239,68,68,0.3);
+  color: var(--red);
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+@keyframes timer-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Admin: crypto info badge */
+.status-badge.crypto-info {
+  background: rgba(99,102,241,0.12);
+  color: var(--accent);
+}
+
+/* Admin: status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.status-badge.pending {
+  background: rgba(245,158,11,0.15);
+  color: var(--orange);
+}
+.status-badge.completed {
+  background: rgba(16,185,129,0.15);
+  color: var(--green);
+}
+.status-badge.rejected {
+  background: rgba(239,68,68,0.15);
+  color: var(--red);
+}
+
+/* Admin: crypto approve/reject actions */
+.admin-crypto-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.btn-success {
+  background: rgba(16,185,129,0.15);
+  color: var(--green);
+  border: 1px solid rgba(16,185,129,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-success:hover {
+  background: rgba(16,185,129,0.25);
+}
+
+/* Admin: pending crypto banner */
+.admin-pending-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  color: var(--orange);
+  margin-bottom: 20px;
+}
+.admin-pending-banner strong {
+  font-weight: 700;
+}
+.admin-pending-banner span {
+  color: var(--text-muted);
+  font-weight: 400;
 }
 
 /* ============================================
