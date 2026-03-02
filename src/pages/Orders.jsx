@@ -181,12 +181,18 @@ export default function Orders() {
                   {order.crypto_details && (
                     <div className="order-crypto-payment-info">
                       <div className="order-crypto-header">
-                        <span className="order-crypto-badge">
-                          {order.crypto_details.cryptoName || order.crypto_details.crypto}
-                        </span>
-                        <span className="order-crypto-network-badge">
-                          {order.crypto_details.networkName || order.crypto_details.network}
-                        </span>
+                        <div className="order-crypto-field">
+                          <span className="order-crypto-label">CRYPTO:</span>
+                          <span className="order-crypto-badge">
+                            {order.crypto_details.crypto}
+                          </span>
+                        </div>
+                        <div className="order-crypto-field">
+                          <span className="order-crypto-label">NETWORK:</span>
+                          <span className="order-crypto-network-badge">
+                            {order.crypto_details.network}
+                          </span>
+                        </div>
                       </div>
                       {order.crypto_details.address && (
                         <div className="order-crypto-address-section">
