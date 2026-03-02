@@ -174,9 +174,13 @@ async function fetchWishlist(dispatch) {
 }
 
 async function fetchOrders(dispatch) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
   const { data, error } = await supabase
     .from("orders")
     .select("*")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
   if (!error && data) {
     const mapped = data.map((o) => ({
