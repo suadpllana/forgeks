@@ -8,6 +8,13 @@ import {
   Menu,
   X,
   Gamepad2,
+  Home,
+  Layers,
+  Gift,
+  Clock,
+  LogOut,
+  UserCircle,
+  LogIn,
 } from "lucide-react";
 import { useStore } from "../context/StoreContext";
 import { supabase } from "../lib/supabase";
@@ -39,11 +46,11 @@ export default function Navbar() {
   const cartCount = state.cart.reduce((s, i) => s + i.qty, 0);
 
   const links = [
-    { to: "/", label: t("home") },
-    { to: "/games", label: t("allGames") },
-    { to: "/gift-cards", label: t("giftCards") },
-    { to: "/wishlist", label: t("wishlist") },
-    { to: "/orders", label: t("myOrders") },
+    { to: "/", label: t("home"), icon: Home },
+    { to: "/games", label: t("allGames"), icon: Layers },
+    { to: "/gift-cards", label: t("giftCards"), icon: Gift },
+    { to: "/wishlist", label: t("wishlist"), icon: Heart },
+    { to: "/orders", label: t("myOrders"), icon: Clock },
   ];
 
   function handleSearch(e) {
@@ -56,111 +63,113 @@ export default function Navbar() {
   }, [location.pathname]);
 
   return (
-    <nav className="navbar">
-      <div className="navbar-inner">
-        {/* Logo */}
-        <Link to="/" className="navbar-logo">
-          <Gamepad2 size={28} />
-          <span>Forge Ks</span>
-        </Link>
+    <>
+      <nav className="navbar">
+        <div className="navbar-inner">
+          {/* Logo */}
+          <Link to="/" className="navbar-logo">
+            <Gamepad2 size={28} />
+            <span>Forge Ks</span>
+          </Link>
 
-        {/* Desktop Links */}
-        <div className="navbar-links desktop-only">
-          {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className={`nav-link ${location.pathname === l.to ? "active" : ""}`}
+          {/* Desktop Links */}
+          <div className="navbar-links desktop-only">
+            {links.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className={`nav-link ${location.pathname === l.to ? "active" : ""}`}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Search */}
+          <div className={`navbar-search ${searchFocused ? "focused" : ""}`}>
+            <Search size={16} />
+            <input
+              ref={searchRef}
+              type="text"
+              placeholder={t("searchPlaceholder")}
+              value={state.searchQuery}
+              onChange={handleSearch}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+            />
+          </div>
+
+          {/* Utilities (desktop only) */}
+          <div className="navbar-utils desktop-only">
+            <LanguageSwitcher />
+            {state.user && <NotificationBell />}
+            <button
+              className="icon-btn"
+              onClick={() => navigate("/wishlist")}
+              title={t("wishlist")}
             >
-              {l.label}
-            </Link>
-          ))}
-        </div>
+              <Heart size={20} />
+              {state.wishlist.length > 0 && (
+                <span className="badge">{state.wishlist.length}</span>
+              )}
+            </button>
+            <button
+              className="icon-btn"
+              onClick={() => navigate("/cart")}
+              title={t("cart")}
+            >
+              <ShoppingCart size={20} />
+              {cartCount > 0 && <span className="badge">{cartCount}</span>}
+            </button>
 
-        {/* Search */}
-        <div className={`navbar-search ${searchFocused ? "focused" : ""}`}>
-          <Search size={16} />
-          <input
-            ref={searchRef}
-            type="text"
-            placeholder={t("searchPlaceholder")}
-            value={state.searchQuery}
-            onChange={handleSearch}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-          />
-        </div>
-
-        {/* Utilities */}
-        <div className="navbar-utils">
-          <LanguageSwitcher />
-          {state.user && <NotificationBell />}
-          <button
-            className="icon-btn"
-            onClick={() => navigate("/wishlist")}
-            title={t("wishlist")}
-          >
-            <Heart size={20} />
-            {state.wishlist.length > 0 && (
-              <span className="badge">{state.wishlist.length}</span>
-            )}
-          </button>
-          <button
-            className="icon-btn"
-            onClick={() => navigate("/cart")}
-            title={t("cart")}
-          >
-            <ShoppingCart size={20} />
-            {cartCount > 0 && <span className="badge">{cartCount}</span>}
-          </button>
-
-          {state.user ? (
-            <div className="user-menu-wrapper" ref={userMenuRef}>
+            {state.user ? (
+              <div className="user-menu-wrapper" ref={userMenuRef}>
+                <button
+                  className="sign-in-btn"
+                  onClick={() => setUserMenuOpen((o) => !o)}
+                >
+                  <User size={16} />
+                  <span>{state.user.name}</span>
+                </button>
+                {userMenuOpen && (
+                  <div className="user-dropdown">
+                    <div className="user-dropdown-name">{state.user.name}</div>
+                    <button
+                      className="user-dropdown-item"
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        navigate("/profile");
+                      }}
+                    >
+                      {t("profile")}
+                    </button>
+                    <button
+                      className="user-dropdown-item"
+                      onClick={async () => {
+                        setUserMenuOpen(false);
+                        await supabase.auth.signOut();
+                        dispatch({ type: "LOGOUT" });
+                      }}
+                    >
+                      {t("signOut")}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
               <button
                 className="sign-in-btn"
-                onClick={() => setUserMenuOpen((o) => !o)}
+                onClick={() =>
+                  dispatch({ type: "OPEN_AUTH_MODAL", payload: "signin" })
+                }
               >
                 <User size={16} />
-                <span>{state.user.name}</span>
+                <span>{t("signInRegister")}</span>
               </button>
-              {userMenuOpen && (
-                <div className="user-dropdown">
-                  <div className="user-dropdown-name">{state.user.name}</div>
-                  <button
-                    className="user-dropdown-item"
-                    onClick={() => {
-                      setUserMenuOpen(false);
-                      navigate("/profile");
-                    }}
-                  >
-                    {t("profile")}
-                  </button>
-                  <button
-                    className="user-dropdown-item"
-                    onClick={async () => {
-                      setUserMenuOpen(false);
-                      await supabase.auth.signOut();
-                      dispatch({ type: "LOGOUT" });
-                    }}
-                  >
-                    {t("signOut")}
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <button
-              className="sign-in-btn"
-              onClick={() =>
-                dispatch({ type: "OPEN_AUTH_MODAL", payload: "signin" })
-              }
-            >
-              <User size={16} />
-              <span className="desktop-only">{t("signInRegister")}</span>
-              <span className="mobile-only-inline">{t("signIn")}</span>
-            </button>
-          )}
+            )}
+          </div>
 
+          {/* Mobile menu button */}
           <button
             className="icon-btn mobile-menu-btn"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -168,22 +177,103 @@ export default function Navbar() {
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="mobile-drawer">
-          {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className={`mobile-link ${location.pathname === l.to ? "active" : ""}`}
-            >
-              {l.label}
-            </Link>
-          ))}
+      {/* Mobile sidebar overlay — outside nav to avoid stacking context issues */}
+      <div
+        className={`mobile-overlay ${mobileOpen ? "open" : ""}`}
+        onClick={() => setMobileOpen(false)}
+      />
+
+      {/* Mobile sidebar */}
+      <aside className={`mobile-sidebar ${mobileOpen ? "open" : ""}`}>
+        {/* Sidebar header */}
+        <div className="mobile-sidebar-header">
+          <Link to="/" className="navbar-logo" onClick={() => setMobileOpen(false)}>
+            <Gamepad2 size={24} />
+            <span>Forge Ks</span>
+          </Link>
+          <button className="icon-btn" onClick={() => setMobileOpen(false)}>
+            <X size={22} />
+          </button>
         </div>
-      )}
-    </nav>
+
+        {/* Search */}
+        <div className="mobile-sidebar-search">
+          <Search size={16} />
+          <input
+            type="text"
+            placeholder={t("searchPlaceholder")}
+            value={state.searchQuery}
+            onChange={handleSearch}
+          />
+        </div>
+
+        {/* Nav links */}
+        <nav className="mobile-sidebar-nav">
+          {links.map((l) => {
+            const Icon = l.icon;
+            return (
+              <Link
+                key={l.to}
+                to={l.to}
+                className={`mobile-nav-link ${location.pathname === l.to ? "active" : ""}`}
+              >
+                <Icon size={18} />
+                {l.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Sidebar footer: user info */}
+        <div className="mobile-sidebar-footer">
+          {state.user ? (
+            <>
+              <div className="mobile-sidebar-user">
+                <div className="mobile-sidebar-avatar">
+                  <User size={20} />
+                </div>
+                <div className="mobile-sidebar-user-info">
+                  <span className="mobile-sidebar-name">{state.user.name}</span>
+                  <span className="mobile-sidebar-email">{state.user.email}</span>
+                </div>
+              </div>
+              <div className="mobile-sidebar-user-actions">
+                <button
+                  className="mobile-nav-link"
+                  onClick={() => { setMobileOpen(false); navigate("/profile"); }}
+                >
+                  <UserCircle size={18} />
+                  {t("profile")}
+                </button>
+                <button
+                  className="mobile-nav-link"
+                  onClick={async () => {
+                    setMobileOpen(false);
+                    await supabase.auth.signOut();
+                    dispatch({ type: "LOGOUT" });
+                  }}
+                >
+                  <LogOut size={18} />
+                  {t("signOut")}
+                </button>
+              </div>
+            </>
+          ) : (
+            <button
+              className="mobile-sidebar-signin btn btn-primary full-width"
+              onClick={() => {
+                setMobileOpen(false);
+                dispatch({ type: "OPEN_AUTH_MODAL", payload: "signin" });
+              }}
+            >
+              <LogIn size={18} />
+              {t("signInRegister")}
+            </button>
+          )}
+        </div>
+      </aside>
+    </>
   );
 }
