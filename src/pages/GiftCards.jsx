@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
-import { useStore } from "../context/StoreContext";
+import { useStore, useFormatPrice } from "../context/StoreContext";
 import { useTranslation } from "react-i18next";
 
 export default function GiftCards() {
   const { t } = useTranslation();
   const { state, dispatch } = useStore();
+  const formatPrice = useFormatPrice();
   const giftCards = state.giftCards;
 
   return (
@@ -31,7 +32,7 @@ export default function GiftCards() {
             </div>
             <div className="gift-card-body">
               <h3>{card.title}</h3>
-              <span className="gift-price">${card.price.toFixed(2)}</span>
+              <span className="gift-price">{formatPrice(card.price)}</span>
               <button
                 className="btn btn-primary btn-sm full-width"
                 onClick={() =>

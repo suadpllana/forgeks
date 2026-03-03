@@ -3,10 +3,16 @@ import {
   useContext,
   useReducer,
   useEffect,
+  useCallback,
+  useRef,
 } from "react";
 import { supabase } from "../lib/supabase";
 
 const StoreContext = createContext();
+
+// ── Exchange rates (relative to USD) ────────────────────────────
+const EXCHANGE_RATES = { USD: 1, EUR: 0.93, GBP: 0.79 };
+const CURRENCY_SYMBOLS = { USD: "$", EUR: "€", GBP: "£" };
 
 const initialState = {
   games: [],
@@ -20,6 +26,7 @@ const initialState = {
   searchQuery: "",
   authModalOpen: false,
   authMode: "signin", // signin | register
+  currency: localStorage.getItem("preferred_currency") || "USD",
 };
 
 function reducer(state, action) {
@@ -85,6 +92,8 @@ function reducer(state, action) {
       };
     case "CLOSE_AUTH_MODAL":
       return { ...state, authModalOpen: false };
+    case "SET_CURRENCY":
+      return { ...state, currency: action.payload };
     default:
       return state;
   }
@@ -254,6 +263,31 @@ export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "di
       : `Your order of $${total.toFixed(2)} has been placed. ${keys.length} game key(s) are ready.`,
   });
 
+  // Send email notification if user has it enabled
+  try {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("email_notifications")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.email_notifications) {
+      fetch("/.netlify/functions/send-order-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: user.email,
+          orderTotal: total,
+          items: cart,
+          orderId: data.id,
+          type: isCrypto ? "crypto" : "direct",
+        }),
+      }).catch(() => {}); // fire-and-forget
+    }
+  } catch (_) {
+    // email is non-critical, don't block order
+  }
+
   return {
     order: {
       id: data.id,
@@ -336,6 +370,10 @@ export function StoreProvider({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Always clear the chat session when auth state changes (logout or login as
+      // a different user) so LiveChat never shows another person's messages.
+      localStorage.removeItem("chat_session_id");
+
       if (session?.user) {
         dispatch({
           type: "SET_USER",
@@ -359,6 +397,30 @@ export function StoreProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // ── Inactivity auto-logout (1 hour) ───────────────────────────
+  const timerRef = useRef(null);
+  const INACTIVITY_MS = 60 * 60 * 1000; // 1 hour
+
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (!state.user) return;
+    timerRef.current = setTimeout(async () => {
+      await supabase.auth.signOut();
+      dispatch({ type: "LOGOUT" });
+    }, INACTIVITY_MS);
+  }, [state.user]);
+
+  useEffect(() => {
+    if (!state.user) return;
+    const events = ["mousemove", "keydown", "mousedown", "touchstart", "scroll"];
+    events.forEach((e) => window.addEventListener(e, resetTimer, { passive: true }));
+    resetTimer();
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, resetTimer));
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [state.user, resetTimer]);
+
   return (
     <StoreContext.Provider value={{ state, dispatch }}>
       {children}
@@ -371,3 +433,14 @@ export function useStore() {
   if (!ctx) throw new Error("useStore must be used within StoreProvider");
   return ctx;
 }
+
+/** Returns a price formatting function using the current store currency */
+export function useFormatPrice() {
+  const { state } = useStore();
+  const currency = state.currency || "USD";
+  const rate = EXCHANGE_RATES[currency] || 1;
+  const symbol = CURRENCY_SYMBOLS[currency] || "$";
+  return (usdPrice) => `${symbol}${(Number(usdPrice) * rate).toFixed(2)}`;
+}
+
+export { EXCHANGE_RATES, CURRENCY_SYMBOLS };

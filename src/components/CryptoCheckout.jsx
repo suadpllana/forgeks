@@ -282,26 +282,17 @@ export default function CryptoCheckout({ total, onSuccess, onCancel }) {
               <label>
                 {t("cryptoAddress")} ({selectedNetwork.tag})
               </label>
-              <div className="crypto-qr-row">
-                <img
-                  className="crypto-qr"
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(selectedNetwork.address)}`}
-                  alt="QR Code"
-                  width={120}
-                  height={120}
-                />
-                <div className="crypto-address-col">
-                  <div className="crypto-address-box">
-                    <code>{selectedNetwork.address}</code>
-                  </div>
-                  <button
-                    className="crypto-copy-btn"
-                    onClick={() => handleCopy(selectedNetwork.address)}
-                  >
-                    {copied ? <Check size={16} /> : <Copy size={16} />}
-                    {copied ? t("copied") : t("copyAddress")}
-                  </button>
+              <div className="crypto-address-col">
+                <div className="crypto-address-box">
+                  <code>{selectedNetwork.address}</code>
                 </div>
+                <button
+                  className="crypto-copy-btn"
+                  onClick={() => handleCopy(selectedNetwork.address)}
+                >
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
+                  {copied ? t("copied") : t("copyAddress")}
+                </button>
               </div>
             </div>
 

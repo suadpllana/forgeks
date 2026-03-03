@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { Star, Heart } from "lucide-react";
-import { useStore, addToWishlistDB, removeFromWishlistDB } from "../context/StoreContext";
+import { useStore, addToWishlistDB, removeFromWishlistDB, useFormatPrice } from "../context/StoreContext";
+import GameImage from "./GameImage";
+import toast from "react-hot-toast";
 
 export default function GameCard({ game }) {
   const { state, dispatch } = useStore();
+  const formatPrice = useFormatPrice();
   const inWishlist = state.wishlist.some((i) => i.id === game.id);
 
   async function handleWishlist(e) {
@@ -16,22 +19,20 @@ export default function GameCard({ game }) {
     dispatch({ type: "TOGGLE_WISHLIST", payload: game });
     if (inWishlist) {
       await removeFromWishlistDB(game.id);
+      toast.success(`Removed from wishlist`);
     } else {
       await addToWishlistDB(game);
+      toast.success(`Added to wishlist`);
     }
   }
 
   return (
     <Link to={`/games/${game.slug}`} className="game-card">
       <div className="game-card-img">
-        <img
+        <GameImage
           src={game.image}
           alt={game.title}
-          loading="lazy"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = `https://placehold.co/460x215/13131a/8888a0?text=${encodeURIComponent(game.title)}`;
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         {game.discount > 0 && (
           <span className="discount-badge">-{game.discount}%</span>
@@ -60,9 +61,9 @@ export default function GameCard({ game }) {
         </div>
         <div className="game-card-price">
           {game.discount > 0 && (
-            <span className="original-price">${game.originalPrice.toFixed(2)}</span>
+            <span className="original-price">{formatPrice(game.originalPrice)}</span>
           )}
-          <span className="current-price">${game.price.toFixed(2)}</span>
+          <span className="current-price">{formatPrice(game.price)}</span>
         </div>
       </div>
     </Link>

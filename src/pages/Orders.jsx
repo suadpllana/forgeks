@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Package, Eye, EyeOff, ClipboardCopy, Clock, CheckCircle, XCircle, Timer, Copy, Check } from "lucide-react";
-import { useStore } from "../context/StoreContext";
+import { useStore, useFormatPrice } from "../context/StoreContext";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../lib/supabase";
 
@@ -45,6 +45,7 @@ function CryptoCountdown({ orderDate, orderId, onExpired }) {
 export default function Orders() {
   const { state, dispatch } = useStore();
   const { t } = useTranslation();
+  const formatPrice = useFormatPrice();
   const [visibleKeys, setVisibleKeys] = useState({});
   const [copiedAddress, setCopiedAddress] = useState(null);
 
@@ -130,7 +131,7 @@ export default function Orders() {
                   })}
                 </span>
               </div>
-              <span className="order-total">${order.total.toFixed(2)}</span>
+              <span className="order-total">{formatPrice(order.total)}</span>
             </div>
 
             {/* Status badge for crypto orders */}
@@ -196,14 +197,6 @@ export default function Orders() {
                       </div>
                       {order.crypto_details.address && (
                         <div className="order-crypto-address-section">
-                          <div className="order-crypto-qr">
-                            <img
-                              src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(order.crypto_details.address)}`}
-                              alt="QR Code"
-                              width={100}
-                              height={100}
-                            />
-                          </div>
                           <div className="order-crypto-address-col">
                             <div className="order-crypto-address-box">
                               <code>{order.crypto_details.address}</code>

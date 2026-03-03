@@ -11,12 +11,15 @@ import {
   Check,
   UserIcon,
 } from "lucide-react";
-import { useStore, addToWishlistDB, removeFromWishlistDB } from "../context/StoreContext";
+import { useStore, addToWishlistDB, removeFromWishlistDB, useFormatPrice } from "../context/StoreContext";
+import GameImage from "../components/GameImage";
 import { supabase } from "../lib/supabase";
+import toast from "react-hot-toast";
 
 export default function GameDetail() {
   const { slug } = useParams();
   const { state, dispatch } = useStore();
+  const formatPrice = useFormatPrice();
   const game = state.games.find((g) => g.slug === slug);
   const [currentImg, setCurrentImg] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -92,6 +95,7 @@ export default function GameDetail() {
   function handleAddToCart() {
     dispatch({ type: "ADD_TO_CART", payload: game });
     setAddedToCart(true);
+    toast.success(`${game.title} added to cart`);
     setTimeout(() => setAddedToCart(false), 2000);
   }
 
@@ -114,10 +118,10 @@ export default function GameDetail() {
         {/* Gallery */}
         <div className="detail-gallery">
           <div className="gallery-main">
-            <img
+            <GameImage
               src={allImages[currentImg]}
               alt={game.title}
-              onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/920x430/13131a/8888a0?text=${encodeURIComponent(game.title)}`; }}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
             />
             <button
               className="gallery-nav prev"
@@ -145,7 +149,7 @@ export default function GameDetail() {
                 className={`thumb ${i === currentImg ? "active" : ""}`}
                 onClick={() => setCurrentImg(i)}
               >
-                <img src={img} alt="" onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/120x66/13131a/8888a0?text=...`; }} />
+                <GameImage src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </button>
             ))}
           </div>
@@ -219,11 +223,11 @@ export default function GameDetail() {
                 <>
                   <span className="discount-badge-lg">-{game.discount}%</span>
                   <span className="original-price-lg">
-                    ${game.originalPrice.toFixed(2)}
+                    {formatPrice(game.originalPrice)}
                   </span>
                 </>
               )}
-              <span className="current-price-lg">${game.price.toFixed(2)}</span>
+              <span className="current-price-lg">{formatPrice(game.price)}</span>
             </div>
           </div>
 
@@ -256,8 +260,10 @@ export default function GameDetail() {
                 dispatch({ type: "TOGGLE_WISHLIST", payload: game });
                 if (inWishlist) {
                   await removeFromWishlistDB(game.id);
+                  toast.success('Removed from wishlist');
                 } else {
                   await addToWishlistDB(game);
+                  toast.success('Added to wishlist');
                 }
               }}
             >

@@ -160,13 +160,13 @@ const games = [
     description:
       "Swing through Marvel's New York as both Peter Parker and Miles Morales. Face iconic villains in this thrilling action-adventure sequel.",
     features: ["Dual Protagonists", "Open World NYC", "Web Swinging", "Epic Boss Fights"],
-    // Using PlayStation image CDN (not age-gated)
-    image: "https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/1c8d2f7c0b79a63d1d1e4e6d5f4a2b3c9e8f1a2b.png",
-    banner: "https://gaming-cdn.com/images/products/9765/616x353/marvels-spider-man-2-ps5-game-playstation-cover.jpg",
+    // Using Steam image for Spider-Man 2 PC port
+    image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995940/header.jpg",
+    banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995940/header.jpg",
     screenshots: [
-      "https://gaming-cdn.com/images/products/9765/screenshot/marvels-spider-man-2-ps5-game-playstation-wallpaper-1.jpg",
-      "https://gaming-cdn.com/images/products/9765/screenshot/marvels-spider-man-2-ps5-game-playstation-wallpaper-2.jpg",
-      "https://gaming-cdn.com/images/products/9765/screenshot/marvels-spider-man-2-ps5-game-playstation-wallpaper-3.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995940/ss_b0ed8424d0c3e97e28fd6c92e3b8e9c5c47e2345.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995940/ss_c1e45f3d2d9f7f4b5c6a8b7e3c91d42e0f56789a.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2995940/header.jpg",
     ],
   },
   {
@@ -273,8 +273,8 @@ const games = [
     description:
       "Catch mysterious creatures called 'Pals' and use them for combat, building, farming, and factory work in this open-world survival crafting game.",
     features: ["Creature Collection", "Base Building", "Multiplayer", "Open World Survival"],
-    image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/058bd87c17a7179e07c446aa64d0574ca43ab9d/header.jpg",
-    banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/058bd87c17a7179e07c446aa64d0574ca43ab9d/header.jpg",
+    image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/header.jpg",
+    banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/header.jpg",
     screenshots: [
       "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/ss_f81b7c4f20be3b99f76a1415c4cdb9b444c99b97.1920x1080.jpg",
       "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/ss_a9fa84f0c21bc536f00925ab4586e8c4f587c2b7.1920x1080.jpg",
@@ -417,8 +417,8 @@ const games = [
     banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/header.jpg",
     screenshots: [
       "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_ef5d29b9c8b2e72b2f5985e12b5ccfb8bb5805f3.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_8b01e7f3e7b1e3d4e0c5f5d5a5b5c5d5e5f5a5b5.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_7fd8e3ae6b3d57e0e6a0d93f2c32786e5e5d7f33.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/ss_2b5c9e7d3e4f6a7b8c9d0e1f2a3b4c5d6e7f8a9b.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1888930/header.jpg",
     ],
   },
   {
@@ -444,9 +444,9 @@ const games = [
     image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/header.jpg",
     banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/header.jpg",
     screenshots: [
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/ss_c2f1e0e7a0b3f7f6c8e9d0a1b2c3d4e5f6a7b8c9.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/ss_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/ss_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/ss_0aae1a63038f25ea17437c36678c47e04aff1e9a.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/ss_3b9a72c50c7d1b12ea5f3bd60a741f7ec6d0eb3f.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/header.jpg",
     ],
   },
   {
@@ -529,8 +529,8 @@ const games = [
     banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2420110/header.jpg",
     screenshots: [
       "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2420110/ss_4a73d59c01c5e5ff0d3ffc6fc4ce3c6ca7e12c7e.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2420110/ss_a8e8b3f4b8c7e1d2f3a4b5c6d7e8f9a0b1c2d3e4.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2420110/ss_e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2420110/ss_5fcab29ca37d2d70820cb3f77e16e9a40d0c832b.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2420110/header.jpg",
     ],
   },
   {
@@ -585,8 +585,8 @@ const games = [
     banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2072450/header.jpg",
     screenshots: [
       "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2072450/ss_4bf78c47a97d55cfc29b22de66f5b13a54fd8cb4.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2072450/ss_0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2072450/ss_a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2072450/ss_6e7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2072450/header.jpg",
     ],
   },
   {
@@ -612,9 +612,9 @@ const games = [
     image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/header.jpg",
     banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/header.jpg",
     screenshots: [
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_44df42d62aa5d9b6bc04e0c79fe6f0c6a0b1f2e3.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_4e5f6a7b8c0d9e1a2b3f4c5d6e7a8b9c0d1e2f3a.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/ss_5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/header.jpg",
     ],
   },
   {
@@ -640,9 +640,9 @@ const games = [
     image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/header.jpg",
     banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/header.jpg",
     screenshots: [
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/ss_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/ss_f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/ss_a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/ss_6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/ss_7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2679460/header.jpg",
     ],
   },
   {
@@ -668,9 +668,9 @@ const games = [
     image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/header.jpg",
     banner: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/header.jpg",
     screenshots: [
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/ss_c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/ss_d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2.1920x1080.jpg",
-      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/ss_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/ss_0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/ss_1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f.1920x1080.jpg",
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/header.jpg",
     ],
   },
 ];

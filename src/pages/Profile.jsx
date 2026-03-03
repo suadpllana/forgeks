@@ -12,13 +12,14 @@ import {
   Bell,
   BellOff,
 } from "lucide-react";
-import { useStore } from "../context/StoreContext";
+import { useStore, useFormatPrice } from "../context/StoreContext";
 import { supabase } from "../lib/supabase";
 import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const { t } = useTranslation();
   const { state, dispatch } = useStore();
+  const formatPrice = useFormatPrice();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: "" });
   const [saving, setSaving] = useState(false);
@@ -193,7 +194,7 @@ export default function Profile() {
           <div className="profile-stat-card">
             <DollarSign size={24} />
             <div>
-              <span className="stat-value">${totalSpent.toFixed(2)}</span>
+              <span className="stat-value">{formatPrice(totalSpent)}</span>
               <span className="stat-label">{t("totalSpent")}</span>
             </div>
           </div>
@@ -243,15 +244,23 @@ export default function Profile() {
                     </span>
                   </div>
                   <span className="order-total">
-                    ${order.total.toFixed(2)}
+                    {formatPrice(order.total)}
                   </span>
                 </div>
                 <div className="order-items">
-                  {order.keys?.map((k, idx) => (
-                    <div key={idx} className="order-key-row">
-                      <span className="order-game-name">{k.game}</span>
-                    </div>
-                  ))}
+                  {order.keys && order.keys.length > 0
+                    ? order.keys.map((k, idx) => (
+                        <div key={idx} className="order-key-row">
+                          <span className="order-game-name">{k.game}</span>
+                        </div>
+                      ))
+                    : order.items && order.items.length > 0
+                    ? order.items.map((item, idx) => (
+                        <div key={idx} className="order-key-row">
+                          <span className="order-game-name">{item.title}</span>
+                        </div>
+                      ))
+                    : null}
                 </div>
               </div>
             ))}

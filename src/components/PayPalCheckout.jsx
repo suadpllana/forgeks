@@ -2,11 +2,13 @@ import { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useFormatPrice } from "../context/StoreContext";
 
 const PAYPAL_CLIENT_ID = import.meta.env.VITE_PAYPAL_CLIENT_ID;
 
 export default function PayPalCheckout({ total, onSuccess, onCancel }) {
   const { t } = useTranslation();
+  const formatPrice = useFormatPrice();
   const [error, setError] = useState("");
 
   if (!PAYPAL_CLIENT_ID) {
@@ -32,7 +34,8 @@ export default function PayPalCheckout({ total, onSuccess, onCancel }) {
           <X size={20} />
         </button>
         <h2>{t("payWithPaypal")}</h2>
-        <p className="payment-total">${total.toFixed(2)}</p>
+        <p className="payment-total">{formatPrice(total)}</p>
+        <p className="payment-currency-note" style={{ fontSize: "0.78rem", opacity: 0.6, marginTop: "-6px" }}>Charged in USD</p>
 
         {error && <p className="payment-error">{error}</p>}
 

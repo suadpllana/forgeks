@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import { useStore, removeFromWishlistDB } from "../context/StoreContext";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 
 export default function Wishlist() {
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ export default function Wishlist() {
   async function handleRemove(game) {
     dispatch({ type: "TOGGLE_WISHLIST", payload: game });
     await removeFromWishlistDB(game.id);
+    toast.success(`Removed from wishlist`);
   }
 
   return (

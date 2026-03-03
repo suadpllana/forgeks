@@ -90,7 +90,11 @@ export default function NotificationBell() {
         className="icon-btn"
         onClick={() => {
           if (!state.user) return;
-          setOpen((o) => !o);
+          const willOpen = !open;
+          setOpen(willOpen);
+          if (willOpen && unreadCount > 0) {
+            markAllRead();
+          }
         }}
         title={t("notifications")}
       >

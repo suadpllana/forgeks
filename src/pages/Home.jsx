@@ -8,9 +8,9 @@ export default function Home() {
   const { t } = useTranslation();
   const { state } = useStore();
   const games = state.games;
-  const trending = games.filter((g) => g.isTrending).slice(0, 4);
-  const newReleases = games.filter((g) => g.isNew).slice(0, 4);
-  const onSale = games.filter((g) => g.onSale).slice(0, 4);
+  const trending = games.filter((g) => g.isTrending).slice(0, 5);
+  const newReleases = games.filter((g) => g.isNew).slice(0, 5);
+  const onSale = games.filter((g) => g.onSale).slice(0, 5);
 
   return (
     <div className="home-page">

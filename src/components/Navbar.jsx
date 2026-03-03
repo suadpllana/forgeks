@@ -21,6 +21,7 @@ import { supabase } from "../lib/supabase";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NotificationBell from "./NotificationBell";
+import CurrencySelector from "./CurrencySelector";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -101,6 +102,7 @@ export default function Navbar() {
 
           {/* Utilities (desktop only) */}
           <div className="navbar-utils desktop-only">
+            <CurrencySelector />
             <LanguageSwitcher />
             {state.user && <NotificationBell />}
             <button

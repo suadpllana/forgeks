@@ -11,6 +11,7 @@ import {
   TrendingUp,
   Megaphone,
   MessageSquare,
+  MessageCircle,
 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import ManageGames from "./ManageGames";
@@ -21,6 +22,7 @@ import DashboardHome from "./DashboardHome";
 import AdminAnalytics from "./AdminAnalytics";
 import AdminAnnouncements from "./AdminAnnouncements";
 import AdminSupportMessages from "./AdminSupportMessages";
+import AdminLiveChat from "./AdminLiveChat";
 
 const TABS = [
   { id: "home", label: "Dashboard", icon: BarChart3 },
@@ -30,6 +32,7 @@ const TABS = [
   { id: "giftcards", label: "Gift Cards", icon: Gift },
   { id: "analytics", label: "Analytics", icon: TrendingUp },
   { id: "announcements", label: "Announcements", icon: Megaphone },
+  { id: "live-chat", label: "Live Chat", icon: MessageCircle },
   { id: "support", label: "Support", icon: MessageSquare },
   { id: "store", label: "Store", icon: LayoutDashboard },
 ];
@@ -67,6 +70,13 @@ export default function AdminDashboard() {
         .select("id", { count: "exact", head: true })
         .eq("status", "open");
       setOpenMsgCount(count || 0);
+
+      // Fetch open live chat count
+      const { count: chatCount } = await supabase
+        .from("chat_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "open");
+      setOpenMsgCount((prev) => prev + (chatCount || 0));
     }
     checkAdmin();
   }, [navigate]);
@@ -103,7 +113,7 @@ export default function AdminDashboard() {
                 if (t.id === "store") {
                   window.open("/", "_blank");
                 } else {
-                  if (t.id === "support") setOpenMsgCount(0);
+                  if (t.id === "support" || t.id === "live-chat") setOpenMsgCount(0);
                   setTab(t.id);
                 }
               }}
@@ -141,6 +151,7 @@ export default function AdminDashboard() {
         {tab === "giftcards" && <ManageGiftCards />}
         {tab === "analytics" && <AdminAnalytics />}
         {tab === "announcements" && <AdminAnnouncements />}
+        {tab === "live-chat" && <AdminLiveChat />}
         {tab === "support" && <AdminSupportMessages />}
       </main>
     </div>

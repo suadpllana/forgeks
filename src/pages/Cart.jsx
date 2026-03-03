@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft, CreditCard, Tag } from "lucide-react";
-import { useStore, placeOrderDB, validateDiscountCode } from "../context/StoreContext";
+import { useStore, placeOrderDB, validateDiscountCode, useFormatPrice } from "../context/StoreContext";
 import { useTranslation } from "react-i18next";
 import PayPalCheckout from "../components/PayPalCheckout";
 import CryptoCheckout from "../components/CryptoCheckout";
+import toast from "react-hot-toast";
 
 export default function Cart() {
   const { t } = useTranslation();
   const { state, dispatch } = useStore();
+  const formatPrice = useFormatPrice();
   const [placing, setPlacing] = useState(false);
   const [paymentMode, setPaymentMode] = useState(null); // null | 'paypal' | 'crypto'
   const [discountCode, setDiscountCode] = useState("");
@@ -49,13 +51,13 @@ export default function Cart() {
     const { order, error } = await placeOrderDB(state.cart, discountAmount, paymentMethod, cryptoDetails);
     setPlacing(false);
     if (error) {
-      alert(t("orderFailed") + error.message);
+      toast.error(t("orderFailed") + error.message);
       return;
     }
     dispatch({ type: "ADD_ORDER", payload: order });
     setAppliedDiscount(null);
     setDiscountCode("");
-    alert("🎉 " + t("orderPlaced"));
+    toast.success(t("orderPlaced"), { icon: '🎉' });
   }
 
   async function handleDirectCheckout() {
@@ -80,7 +82,7 @@ export default function Cart() {
       networkName: details.networkName,
       address: details.address,
     });
-    alert("⏳ " + t("cryptoOrderPending"));
+    toast.success(t("cryptoOrderPending"), { icon: '⏳', duration: 5000 });
   }
 
   if (state.cart.length === 0)
@@ -143,7 +145,7 @@ export default function Cart() {
                 </button>
               </div>
               <div className="cart-item-price">
-                ${(item.price * item.qty).toFixed(2)}
+                {formatPrice(item.price * item.qty)}
               </div>
               <button
                 className="cart-remove"
@@ -188,12 +190,12 @@ export default function Cart() {
 
           <div className="summary-row">
             <span>{t("subtotal")}</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>{formatPrice(subtotal)}</span>
           </div>
           {discountAmount > 0 && (
             <div className="summary-row discount-row">
               <span>{t("discount")}</span>
-              <span className="discount-value">-${discountAmount.toFixed(2)}</span>
+              <span className="discount-value">-{formatPrice(discountAmount)}</span>
             </div>
           )}
           <div className="summary-row">
@@ -202,7 +204,7 @@ export default function Cart() {
           </div>
           <div className="summary-row total">
             <span>{t("total")}</span>
-            <span>${total.toFixed(2)}</span>
+            <span>{formatPrice(total)}</span>
           </div>
 
           {/* Payment options */}
@@ -213,7 +215,7 @@ export default function Cart() {
               disabled={placing}
             >
               <CreditCard size={16} />
-              {placing ? t("placingOrder") : `${t("directCheckout")} — $${total.toFixed(2)}`}
+              {placing ? t("placingOrder") : `${t("directCheckout")} — ${formatPrice(total)}`}
             </button>
             <button
               className="btn btn-paypal full-width"
