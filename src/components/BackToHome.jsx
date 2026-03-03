@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 export default function BackToHome() {
   const { t } = useTranslation();
   return (
-    <Link to="/" className="mobile-back-home">
+    <Link to="/games" className="mobile-back-home">
       <ArrowLeft size={18} />
-      <span>{t("home")}</span>
+      <span>{t("allGames")}</span>
     </Link>
   );
 }
