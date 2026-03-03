@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { SlidersHorizontal, LayoutGrid, List, Loader } from "lucide-react";
+import { SlidersHorizontal, LayoutGrid, List, Loader, X } from "lucide-react";
 import GameCard from "../components/GameCard";
 import { useStore } from "../context/StoreContext";
 
@@ -128,6 +128,12 @@ export default function AllGames() {
       <div className="catalog-layout">
         {/* Sidebar */}
         <aside className={`filter-sidebar ${showFilters ? "open" : ""}`}>
+          <div className="filter-sidebar-header">
+            <h3>Filters</h3>
+            <button className="icon-btn filter-close-btn" onClick={() => setShowFilters(false)}>
+              <X size={22} />
+            </button>
+          </div>
           <div className="filter-group">
             <h4>Platform</h4>
             {PLATFORMS.map((p) => (

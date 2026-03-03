@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import BackToHome from "../components/BackToHome";
 import { useState, useEffect } from "react";
 import {
   Star,
@@ -101,6 +102,7 @@ export default function GameDetail() {
 
   return (
     <div className="game-detail-page">
+      <BackToHome />
       {/* Breadcrumb */}
       <div className="breadcrumb">
         <Link to="/games">All Games</Link>
