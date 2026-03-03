@@ -198,17 +198,6 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Search */}
-        <div className="mobile-sidebar-search">
-          <Search size={16} />
-          <input
-            type="text"
-            placeholder={t("searchPlaceholder")}
-            value={state.searchQuery}
-            onChange={handleSearch}
-          />
-        </div>
-
         {/* Nav links */}
         <nav className="mobile-sidebar-nav">
           {links.map((l) => {
