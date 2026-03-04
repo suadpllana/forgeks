@@ -33,6 +33,30 @@ export default function Cart() {
   }
   const total = Math.max(0, subtotal - discountAmount);
 
+  function validatePlatformSelection() {
+    const missing = state.cart.filter(
+      (item) =>
+        Array.isArray(item.platform) &&
+        item.platform.length > 1 &&
+        !selectedPlatforms[item.id]
+    );
+    if (missing.length > 0) {
+      toast.error(t("selectPlatformError"));
+      return false;
+    }
+    return true;
+  }
+
+  function validateBilling() {
+    const requiredFields = ["name", "address", "city", "zip", "country"];
+    const missing = requiredFields.filter((key) => !billing[key].trim());
+    if (missing.length > 0) {
+      toast.error(t("billingRequiredError"));
+      return false;
+    }
+    return true;
+  }
+
   async function handleApplyDiscount() {
     if (!discountCode.trim()) return;
     setApplyingCode(true);
@@ -49,8 +73,15 @@ export default function Cart() {
   }
 
   async function completeOrder(paymentMethod = "direct", cryptoDetails = null) {
+    if (!validatePlatformSelection() || !validateBilling()) return;
     setPlacing(true);
-    const { order, error } = await placeOrderDB(state.cart, discountAmount, paymentMethod, cryptoDetails);
+    const { order, error } = await placeOrderDB(
+      state.cart,
+      discountAmount,
+      paymentMethod,
+      cryptoDetails,
+      { billing, selectedPlatforms }
+    );
     setPlacing(false);
     if (error) {
       toast.error(t("orderFailed") + error.message);
@@ -111,6 +142,7 @@ export default function Cart() {
           {state.cart.map((item) => (
             <div key={item.id} className="cart-item">
               <img src={item.image} alt={item.title} />
+              {/* image styling handled globally in CSS */}
               <div className="cart-item-info">
                 <h3>{item.title}</h3>
                 <div className="cart-item-platforms">
@@ -123,11 +155,14 @@ export default function Cart() {
                 {item.platform && item.platform.length > 1 && (
                   <div className="cart-item-platform-select">
                     <select
-                      value={selectedPlatforms[item.id] || item.platform[0]}
+                      value={selectedPlatforms[item.id] || ""}
                       onChange={(e) =>
                         setSelectedPlatforms((prev) => ({ ...prev, [item.id]: e.target.value }))
                       }
                     >
+                      <option value="" disabled>
+                        {t("choosePlatform")}
+                      </option>
                       {item.platform.map((p) => (
                         <option key={p} value={p}>{p}</option>
                       ))}
@@ -225,23 +260,51 @@ export default function Cart() {
 
           {/* Billing address */}
           <div className="billing-address-section">
-            <h4><MapPin size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />Billing Address <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none' }}>(optional)</span></h4>
+            <h4>
+              <MapPin size={14} style={{ marginRight: 6, verticalAlign: "middle" }} />
+              {t("billingAddress")} <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: 400, textTransform: "none" }}>*</span>
+            </h4>
             <div className="billing-field">
-              <input type="text" placeholder="Full name" value={billing.name} onChange={(e) => setBilling({ ...billing, name: e.target.value })} />
+              <input
+                type="text"
+                placeholder={t("billingFullNamePlaceholder")}
+                value={billing.name}
+                onChange={(e) => setBilling({ ...billing, name: e.target.value })}
+              />
             </div>
             <div className="billing-field">
-              <input type="text" placeholder="Street address" value={billing.address} onChange={(e) => setBilling({ ...billing, address: e.target.value })} />
+              <input
+                type="text"
+                placeholder={t("billingAddressPlaceholder")}
+                value={billing.address}
+                onChange={(e) => setBilling({ ...billing, address: e.target.value })}
+              />
             </div>
             <div className="billing-row">
               <div className="billing-field">
-                <input type="text" placeholder="City" value={billing.city} onChange={(e) => setBilling({ ...billing, city: e.target.value })} />
+                <input
+                  type="text"
+                  placeholder={t("billingCityPlaceholder")}
+                  value={billing.city}
+                  onChange={(e) => setBilling({ ...billing, city: e.target.value })}
+                />
               </div>
               <div className="billing-field">
-                <input type="text" placeholder="ZIP / Postal" value={billing.zip} onChange={(e) => setBilling({ ...billing, zip: e.target.value })} />
+                <input
+                  type="text"
+                  placeholder={t("billingZipPlaceholder")}
+                  value={billing.zip}
+                  onChange={(e) => setBilling({ ...billing, zip: e.target.value })}
+                />
               </div>
             </div>
             <div className="billing-field">
-              <input type="text" placeholder="Country" value={billing.country} onChange={(e) => setBilling({ ...billing, country: e.target.value })} />
+              <input
+                type="text"
+                placeholder={t("billingCountryPlaceholder")}
+                value={billing.country}
+                onChange={(e) => setBilling({ ...billing, country: e.target.value })}
+              />
             </div>
           </div>
 

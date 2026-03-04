@@ -1,4 +1,4 @@
-﻿import { useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import BackToHome from "../components/BackToHome";
 import { useState, useEffect } from "react";
 import {
@@ -108,7 +108,23 @@ export default function GameDetail() {
     );
 
   const inWishlist = state.wishlist.some((i) => i.id === game.id);
-  const allImages = [game.banner, ...game.screenshots];
+
+  // Build a clean screenshots array from the DB field (which may be JSON string or array)
+  let screenshots = [];
+  if (Array.isArray(game.screenshots)) {
+    screenshots = game.screenshots;
+  } else if (typeof game.screenshots === "string" && game.screenshots.trim()) {
+    try {
+      const parsed = JSON.parse(game.screenshots);
+      if (Array.isArray(parsed)) screenshots = parsed;
+    } catch {
+      screenshots = [];
+    }
+  }
+
+  const allImages = [game.banner, ...screenshots].filter(Boolean);
+  const hasGallery = allImages.length > 0;
+  const mainImageSrc = hasGallery ? allImages[Math.min(currentImg, allImages.length - 1)] : game.image;
 
   function handleAddToCart() {
     dispatch({ type: "ADD_TO_CART", payload: game });
@@ -136,35 +152,47 @@ export default function GameDetail() {
         <div className="detail-gallery">
           <div className="gallery-main">
             <GameImage
-              src={allImages[currentImg]}
+              src={mainImageSrc}
               alt={game.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              className="game-cover-img"
             />
-            <button
-              className="gallery-nav prev"
-              onClick={() => setCurrentImg((currentImg - 1 + allImages.length) % allImages.length)}
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              className="gallery-nav next"
-              onClick={() => setCurrentImg((currentImg + 1) % allImages.length)}
-            >
-              <ChevronRight size={24} />
-            </button>
-            <div className="gallery-counter">{currentImg + 1} / {allImages.length}</div>
+            {hasGallery && allImages.length > 1 && (
+              <>
+                <button
+                  className="gallery-nav prev"
+                  onClick={() =>
+                    setCurrentImg((prev) => (prev - 1 + allImages.length) % allImages.length)
+                  }
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button
+                  className="gallery-nav next"
+                  onClick={() =>
+                    setCurrentImg((prev) => (prev + 1) % allImages.length)
+                  }
+                >
+                  <ChevronRight size={24} />
+                </button>
+                <div className="gallery-counter">
+                  {currentImg + 1} / {allImages.length}
+                </div>
+              </>
+            )}
           </div>
-          <div className="gallery-thumbs">
-            {allImages.map((img, i) => (
-              <button
-                key={i}
-                className={`thumb ${i === currentImg ? "active" : ""}`}
-                onClick={() => setCurrentImg(i)}
-              >
-                <GameImage src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </button>
-            ))}
-          </div>
+          {hasGallery && (
+            <div className="gallery-thumbs">
+              {allImages.map((img, i) => (
+                <button
+                  key={i}
+                  className={`thumb ${i === currentImg ? "active" : ""}`}
+                  onClick={() => setCurrentImg(i)}
+                >
+                  <GameImage src={img} alt="" className="game-cover-img" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Info */}

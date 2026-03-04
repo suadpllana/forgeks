@@ -1639,6 +1639,11 @@
   .profile-layout { grid-template-columns: 1fr; }
   .analytics-grid { grid-template-columns: 1fr; }
   .contact-layout { grid-template-columns: 1fr; }
+  /* Make room for longer nav labels (e.g. Albanian)
+     by shrinking the search bar on medium screens */
+  .navbar-search {
+    max-width: 260px;
+  }
 }
 
 /* -- Mobile -- */
@@ -4131,17 +4136,20 @@
   height: 420px;
   border-radius: 16px;
   overflow: hidden;
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.45) 0%, transparent 55%),
+    radial-gradient(circle at 90% 20%, rgba(59, 130, 246, 0.35) 0%, transparent 55%),
+    linear-gradient(135deg, #050510 0%, #050818 45%, #02040a 100%);
 }
 .featured-poster-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.45) 55%, transparent 100%);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: space-between;
   padding: 40px 48px;
+  gap: 32px;
 }
 .featured-poster-content {
   max-width: 480px;
@@ -4164,6 +4172,25 @@
   line-height: 1.15;
   margin-bottom: 10px;
   color: #fff;
+}
+
+.featured-poster-art {
+  flex: 0 0 320px;
+  max-width: 340px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured-poster-img {
+  width: 100%;
+  height: 100%;
+  max-height: 360px;
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
+  object-fit: cover;
+  object-position: center top;
 }
 .featured-meta {
   display: flex;
@@ -4252,7 +4279,7 @@
   flex-wrap: wrap;
 }
 .review-submit-btn {
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 120px;
   padding: 9px 18px;
   background: var(--accent);
@@ -4550,6 +4577,13 @@
 [lang="de"] .nav-link,
 .navbar-links .nav-link {
   font-size: 0.82rem;
+}
+
+/* ============================================
+   ALBANIAN NAV TWEAKS
+   ============================================ */
+[lang="sq"] .navbar-search {
+  max-width: 300px;
 }
 
 /* ============================================

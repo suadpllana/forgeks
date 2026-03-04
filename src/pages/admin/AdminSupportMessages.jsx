@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { MessageSquare, Mail, Clock, CheckCircle, AlertCircle, Loader, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 const STATUS_OPTIONS = ["open", "in_progress", "resolved"];
 
@@ -43,16 +44,26 @@ export default function AdminSupportMessages() {
 
   async function updateStatus(id, status) {
     setSavingId(id);
-    await supabase.from("support_messages").update({ status }).eq("id", id);
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, status } : m)));
+    const { error } = await supabase.from("support_messages").update({ status }).eq("id", id);
+    if (error) {
+      toast.error("Failed to update status");
+    } else {
+      setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, status } : m)));
+      toast.success("Status updated");
+    }
     setSavingId(null);
   }
 
   async function saveNotes(id) {
     setSavingId(id);
     const notes = notesDraft[id] ?? messages.find((m) => m.id === id)?.admin_notes ?? "";
-    await supabase.from("support_messages").update({ admin_notes: notes }).eq("id", id);
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, admin_notes: notes } : m)));
+    const { error } = await supabase.from("support_messages").update({ admin_notes: notes }).eq("id", id);
+    if (error) {
+      toast.error("Failed to save notes");
+    } else {
+      setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, admin_notes: notes } : m)));
+      toast.success("Notes saved");
+    }
     setSavingId(null);
   }
 

@@ -12,6 +12,7 @@ import {
   Search,
 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 const STATUS_STYLES = {
   open: { color: "#ef4444", bg: "rgba(239,68,68,0.12)", label: "Open" },
@@ -123,7 +124,7 @@ export default function AdminLiveChat() {
     const text = reply.trim();
     setReply("");
 
-    const { data: newMsg } = await supabase
+    const { data: newMsg, error } = await supabase
       .from("chat_messages")
       .insert({
         session_id: selectedId,
@@ -143,6 +144,12 @@ export default function AdminLiveChat() {
       });
     }
 
+    if (error) {
+      toast.error("Failed to send message");
+      setSending(false);
+      return;
+    }
+
     await supabase
       .from("chat_sessions")
       .update({ status: "in_progress", updated_at: new Date().toISOString() })
@@ -155,13 +162,23 @@ export default function AdminLiveChat() {
   }
 
   async function closeSession(id) {
-    await supabase.from("chat_sessions").update({ status: "closed" }).eq("id", id);
+    const { error } = await supabase.from("chat_sessions").update({ status: "closed" }).eq("id", id);
+    if (error) {
+      toast.error("Failed to close chat");
+      return;
+    }
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, status: "closed" } : s)));
+    toast.success("Chat closed");
   }
 
   async function reopenSession(id) {
-    await supabase.from("chat_sessions").update({ status: "open" }).eq("id", id);
+    const { error } = await supabase.from("chat_sessions").update({ status: "open" }).eq("id", id);
+    if (error) {
+      toast.error("Failed to reopen chat");
+      return;
+    }
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, status: "open" } : s)));
+    toast.success("Chat reopened");
   }
 
   const filteredSessions = sessions.filter((s) => {

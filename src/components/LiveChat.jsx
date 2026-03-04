@@ -66,9 +66,9 @@ const AUTO_REPLIES = [
       "All our products are **100% digital**. There's no shipping — game keys and gift cards are delivered instantly to your account after purchase.",
   },
   {
-    keywords: ["contact", "support", "agent", "human", "person", "real person", "talk to someone"],
+    keywords: ["contact", "support", "agent", "human", "person", "real person", "talk to someone", "admin"],
     reply:
-      "Your message is being sent directly to our support team and they will reply here in the chat! You can also reach us at **support@forgeks.com**. Response time is usually within a few hours.",
+      "Okay, I’ll connect you to a real support agent now. An admin will reply here in this chat shortly — once they join, I’ll stay quiet so you can talk directly with them. You can also reach us at **support@forgeks.com** if you prefer email.",
   },
   {
     keywords: ["thanks", "thank you", "thx", "ty", "great", "awesome", "perfect", "solved"],

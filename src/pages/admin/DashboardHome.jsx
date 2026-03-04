@@ -50,6 +50,9 @@ export default function DashboardHome() {
   if (loading)
     return <div className="admin-panel-loading">Loading stats...</div>;
 
+  const avgOrderValue =
+    stats.totalOrders > 0 ? stats.totalRevenue / stats.totalOrders : 0;
+
   return (
     <div className="dashboard-home">
       <div className="admin-header-row">
@@ -96,6 +99,17 @@ export default function DashboardHome() {
               ${stats.totalRevenue.toFixed(2)}
             </span>
             <span className="stat-label">Total Revenue</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon revenue">
+            <TrendingUp size={24} />
+          </div>
+          <div>
+            <span className="stat-value">
+              ${avgOrderValue.toFixed(2)}
+            </span>
+            <span className="stat-label">Avg. Order Value</span>
           </div>
         </div>
         {stats.pendingCrypto > 0 && (

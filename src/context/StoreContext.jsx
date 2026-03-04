@@ -223,10 +223,27 @@ export async function removeFromWishlistDB(gameId) {
   return error;
 }
 
-export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "direct", cryptoDetails = null) {
+export async function placeOrderDB(
+  cart,
+  discountAmount = 0,
+  paymentMethod = "direct",
+  cryptoDetails = null,
+  options = {}
+) {
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const total = Math.max(0, subtotal - discountAmount);
   const isCrypto = paymentMethod === "crypto";
+
+  const selectedPlatforms = options.selectedPlatforms || {};
+
+  // Persist a per-item selected platform so admins can see exactly
+  // which platform the user chose at checkout.
+  const itemsWithPlatform = cart.map((i) => ({
+    ...i,
+    selectedPlatform:
+      selectedPlatforms[i.id] ||
+      (Array.isArray(i.platform) && i.platform.length === 1 ? i.platform[0] : null),
+  }));
 
   // For crypto orders: no keys until admin approves. For others: generate immediately.
   const keys = isCrypto
@@ -241,7 +258,18 @@ export async function placeOrderDB(cart, discountAmount = 0, paymentMethod = "di
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: { message: "You must be logged in to place an order." } };
 
-  const insertPayload = { user_id: user.id, items: cart, total, keys, payment_method: paymentMethod, status };
+  const insertPayload = {
+    user_id: user.id,
+    items: itemsWithPlatform,
+    total,
+    keys,
+    payment_method: paymentMethod,
+    status,
+  };
+
+  if (options.billing) {
+    insertPayload.billing = options.billing;
+  }
   if (isCrypto && cryptoDetails) {
     insertPayload.crypto_details = cryptoDetails; // { crypto: "BTC", network: "BTC" }
   }

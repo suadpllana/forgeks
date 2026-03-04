@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eye, EyeOff, RefreshCw, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Eye, EyeOff, RefreshCw, CheckCircle, XCircle, Clock, Search } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import toast from "react-hot-toast";
 
@@ -8,6 +8,7 @@ export default function ManageOrders() {
   const [profiles, setProfiles] = useState({});
   const [loading, setLoading] = useState(true);
   const [visibleKeys, setVisibleKeys] = useState({});
+  const [search, setSearch] = useState("");
 
   async function loadOrders() {
     setLoading(true);
@@ -45,8 +46,28 @@ export default function ManageOrders() {
   if (loading)
     return <div className="admin-panel-loading">Loading orders...</div>;
 
-  const totalRevenue = orders.reduce((s, o) => s + Number(o.total || 0), 0);
-  const pendingCrypto = orders.filter((o) => o.status === "pending_crypto");
+  const filteredOrders = orders.filter((o) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    const profile = profiles[o.user_id];
+    const buyerName = (profile?.full_name || "").toLowerCase();
+    const buyerEmail = (profile?.email || "").toLowerCase();
+    const idPart = String(o.id).toLowerCase();
+    const itemsMatch = (o.items || []).some((i) =>
+      (i.title || i.name || "").toLowerCase().includes(q)
+    );
+    const priceMatch = String(o.total || "").includes(q);
+    return (
+      buyerName.includes(q) ||
+      buyerEmail.includes(q) ||
+      idPart.includes(q) ||
+      itemsMatch ||
+      priceMatch
+    );
+  });
+
+  const totalRevenue = filteredOrders.reduce((s, o) => s + Number(o.total || 0), 0);
+  const pendingCrypto = filteredOrders.filter((o) => o.status === "pending_crypto");
 
   async function handleApproveCrypto(order) {
     // Generate keys on approval
@@ -91,14 +112,25 @@ export default function ManageOrders() {
     <div className="manage-orders">
       <div className="admin-header-row">
         <h2>
-          All Orders ({orders.length})
+          All Orders ({filteredOrders.length})
           <span className="admin-revenue-badge">
             Revenue: ${totalRevenue.toFixed(2)}
           </span>
         </h2>
-        <button className="btn btn-outline btn-sm" onClick={loadOrders}>
-          <RefreshCw size={14} /> Refresh
-        </button>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="admin-table-search">
+            <Search size={14} />
+            <input
+              type="text"
+              placeholder="Search by game, buyer, or price..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <button className="btn btn-outline btn-sm" onClick={loadOrders}>
+            <RefreshCw size={14} /> Refresh
+          </button>
+        </div>
       </div>
 
       {/* Pending crypto orders banner */}
@@ -110,9 +142,9 @@ export default function ManageOrders() {
         </div>
       )}
 
-      {orders.length === 0 ? (
+      {filteredOrders.length === 0 ? (
         <p className="admin-muted" style={{ textAlign: "center", padding: 32 }}>
-          No orders yet.
+          No orders found.
         </p>
       ) : (
         <table className="admin-table">
@@ -129,7 +161,7 @@ export default function ManageOrders() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((o) => {
+            {filteredOrders.map((o) => {
               const profile = profiles[o.user_id];
               return (
                 <tr key={o.id}>

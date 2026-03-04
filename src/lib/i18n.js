@@ -112,6 +112,17 @@ const resources = {
       orderCancelledNoPayment: "This order was cancelled because payment was not received in time.",
       orderFailed: "Failed to place order: ",
 
+      // Checkout validation
+      selectPlatformError: "Please choose a platform for each game before checking out.",
+      billingRequiredError: "Billing address is required.",
+      billingAddress: "Billing Address",
+      billingFullNamePlaceholder: "Full name",
+      billingAddressPlaceholder: "Street address",
+      billingCityPlaceholder: "City",
+      billingZipPlaceholder: "ZIP / Postal",
+      billingCountryPlaceholder: "Country",
+      choosePlatform: "Choose platform",
+
       // Wishlist
       signInWishlist: "Sign in to manage your wishlist",
       saveGamesHere: "Save games you love — they'll appear right here.",
@@ -381,6 +392,17 @@ const resources = {
       cryptoAutoReject: "Nëse pagesa nuk merret brenda 30 minutave, porosia juaj do të anulohet automatikisht.",
       orderCancelledNoPayment: "Kjo porosi u anulua sepse pagesa nuk u mor në kohë.",
       orderFailed: "Dështoi vendosja e porosisë: ",
+
+      // Checkout validation
+      selectPlatformError: "Ju lutemi zgjidhni platformën për çdo lojë para përfundimit të blerjes.",
+      billingRequiredError: "Adresa e faturimit është e detyrueshme.",
+      billingAddress: "Adresa e faturimit",
+      billingFullNamePlaceholder: "Emri i plotë",
+      billingAddressPlaceholder: "Adresa e rrugës",
+      billingCityPlaceholder: "Qyteti",
+      billingZipPlaceholder: "Kodi postar",
+      billingCountryPlaceholder: "Shteti",
+      choosePlatform: "Zgjidh platformën",
 
       // Wishlist
       signInWishlist: "Hyni për të menaxhuar listën tuaj të dëshirave",
@@ -654,6 +676,17 @@ const resources = {
       orderCancelledNoPayment: "Diese Bestellung wurde storniert, da die Zahlung nicht rechtzeitig eingegangen ist.",
       orderFailed: "Bestellung fehlgeschlagen: ",
 
+      // Checkout validation
+      selectPlatformError: "Bitte wählen Sie für jedes Spiel eine Plattform, bevor Sie zur Kasse gehen.",
+      billingRequiredError: "Rechnungsadresse ist erforderlich.",
+      billingAddress: "Rechnungsadresse",
+      billingFullNamePlaceholder: "Vollständiger Name",
+      billingAddressPlaceholder: "Straße und Hausnummer",
+      billingCityPlaceholder: "Stadt",
+      billingZipPlaceholder: "PLZ",
+      billingCountryPlaceholder: "Land",
+      choosePlatform: "Plattform wählen",
+
       // Wishlist
       signInWishlist: "Anmelden um Ihre Wunschliste zu verwalten",
       saveGamesHere: "Speichern Sie Spiele die Sie mögen — sie erscheinen hier.",
@@ -817,13 +850,27 @@ const resources = {
 };
 
 // Get saved language or default to English
-const savedLang = typeof window !== "undefined" ? localStorage.getItem("forgeks-lang") || "en" : "en";
+const savedLang =
+  typeof window !== "undefined"
+    ? localStorage.getItem("forgeks-lang") || "en"
+    : "en";
 
 i18n.use(initReactI18next).init({
   resources,
   lng: savedLang,
   fallbackLng: "en",
   interpolation: { escapeValue: false },
+});
+
+// Keep <html lang="..."> in sync so CSS like [lang="de"] works
+if (typeof document !== "undefined") {
+  document.documentElement.lang = savedLang;
+}
+
+i18n.on("languageChanged", (lng) => {
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = lng;
+  }
 });
 
 export default i18n;

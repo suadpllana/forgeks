@@ -32,7 +32,7 @@ export default function GameCard({ game }) {
         <GameImage
           src={game.image}
           alt={game.title}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          className="game-cover-img"
         />
         {game.discount > 0 && (
           <span className="discount-badge">-{game.discount}%</span>

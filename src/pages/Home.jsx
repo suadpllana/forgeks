@@ -3,6 +3,7 @@ import { Zap, Gift, TrendingUp, Clock, Tag, Star, ChevronRight } from "lucide-re
 import { useTranslation } from "react-i18next";
 import GameCard from "../components/GameCard";
 import { useStore, useFormatPrice } from "../context/StoreContext";
+import GameImage from "../components/GameImage";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -32,22 +33,40 @@ export default function Home() {
 
       {featured && (
         <section className="featured-poster-section">
-          <div className="featured-poster" style={{ backgroundImage: `url(${featured.banner || featured.image})` }}>
+          <div className="featured-poster">
             <div className="featured-poster-overlay">
-            <div className="featured-poster-content">
-              <span className="featured-label">Featured Game</span>
-              <h2 className="featured-title">{featured.title}</h2>
-              <div className="featured-meta">
-                <div className="featured-rating"><Star size={16} fill="var(--accent)" stroke="var(--accent)" /><span>{featured.rating}</span></div>
-                {featured.platform.map((p) => <span key={p} className="platform-tag">{p}</span>)}
+              <div className="featured-poster-content">
+                <span className="featured-label">Featured Game</span>
+                <h2 className="featured-title">{featured.title}</h2>
+                <div className="featured-meta">
+                  <div className="featured-rating">
+                    <Star size={16} fill="var(--accent)" stroke="var(--accent)" />
+                    <span>{featured.rating}</span>
+                  </div>
+                  {featured.platform.map((p) => (
+                    <span key={p} className="platform-tag">
+                      {p}
+                    </span>
+                  ))}
+                </div>
+                <p className="featured-desc">
+                  {featured.description?.slice(0, 130)}...
+                </p>
+                <div className="featured-actions">
+                  <Link to={`/games/${featured.slug}`} className="btn btn-primary">
+                    View Game <ChevronRight size={16} />
+                  </Link>
+                  <span className="featured-price">{formatPrice(featured.price)}</span>
+                </div>
               </div>
-              <p className="featured-desc">{featured.description?.slice(0, 130)}...</p>
-              <div className="featured-actions">
-                <Link to={`/games/${featured.slug}`} className="btn btn-primary">View Game <ChevronRight size={16} /></Link>
-                <span className="featured-price">{formatPrice(featured.price)}</span>
+              <div className="featured-poster-art">
+                <GameImage
+                  src={featured.banner || featured.image}
+                  alt={featured.title}
+                  className="featured-poster-img"
+                />
               </div>
             </div>
-          </div>
           </div>
         </section>
       )}
