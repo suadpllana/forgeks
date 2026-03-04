@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const faqs = [
   {
@@ -92,12 +93,13 @@ function FaqItem({ item }) {
 
 export default function HelpCenter() {
   const [activeCategory, setActiveCategory] = useState(null);
+  const { t } = useTranslation();
 
   return (
     <div className="legal-page help-center-page">
       <div className="legal-header">
         <HelpCircle size={36} className="legal-icon" />
-        <h1>Help Center</h1>
+        <h1>{t("helpCenterTitle")}</h1>
         <p>Find answers to the most common questions below.</p>
       </div>
 

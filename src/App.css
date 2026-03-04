@@ -4081,6 +4081,508 @@
   opacity: 0.85;
 }
 
+/* ============================================
+   LANG SWITCHER — CURRENT LANGUAGE DISPLAY
+   ============================================ */
+.lang-btn-current {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.lang-btn-current:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.lang-btn-flag { font-size: 1rem; line-height: 1; }
+.lang-btn-code { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; }
+.lang-dropdown-header {
+  padding: 8px 14px 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+.lang-check {
+  margin-left: auto;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ============================================
+   FEATURED POSTER SECTION (Home)
+   ============================================ */
+.featured-poster-section {
+  margin: 0 0 48px;
+}
+.featured-poster {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+.featured-poster-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.45) 55%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 40px 48px;
+}
+.featured-poster-content {
+  max-width: 480px;
+}
+.featured-label {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.featured-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 10px;
+  color: #fff;
+}
+.featured-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.featured-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #f59e0b;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.featured-desc {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 20px;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.featured-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.featured-price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* ============================================
+   DIGITAL KEY WARNING (GameDetail)
+   ============================================ */
+.digital-key-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 20px 0;
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.digital-key-warning svg {
+  color: #f59e0b;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ============================================
+   REVIEWS UX IMPROVEMENTS (GameDetail)
+   ============================================ */
+.leave-review-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+.leave-review-btn:hover {
+  background: var(--accent-hover, #6d28d9);
+}
+.review-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.review-submit-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 9px 18px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.review-submit-btn:hover { background: var(--accent-hover, #6d28d9); }
+.review-cancel-btn {
+  padding: 9px 16px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.review-cancel-btn:hover { border-color: var(--text-muted); color: var(--text); }
+.own-review-badge {
+  display: inline-block;
+  background: rgba(124,58,237,0.2);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.review-own-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.btn-xs {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-xs:hover { color: var(--text); border-color: var(--text-muted); }
+.btn-danger {
+  color: #ef4444 !important;
+  border-color: rgba(239,68,68,0.4) !important;
+}
+.btn-danger:hover {
+  background: rgba(239,68,68,0.1) !important;
+  border-color: #ef4444 !important;
+}
+
+/* ============================================
+   GALLERY COUNTER (GameDetail)
+   ============================================ */
+.gallery-counter {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 0.78rem;
+  padding: 3px 10px;
+  border-radius: 99px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ============================================
+   WISHLIST SEARCH
+   ============================================ */
+.wishlist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.wishlist-header h1 { margin: 0; }
+.wishlist-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  color: var(--text-muted);
+  transition: border 0.2s;
+}
+.wishlist-search:focus-within {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.wishlist-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  width: 200px;
+}
+.wishlist-platforms {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+/* ============================================
+   ORDERS SEARCH
+   ============================================ */
+.orders-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.orders-search-input {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 14px;
+  color: var(--text-muted);
+  transition: border 0.2s;
+}
+.orders-search-input:focus-within {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.orders-search-input input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  width: 100%;
+}
+.orders-sort-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  color: var(--text);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ============================================
+   ALL GAMES — INDEPENDENT FILTER SCROLL
+   ============================================ */
+.filter-sidebar {
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.filter-sidebar::-webkit-scrollbar { width: 4px; }
+.filter-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Page-level search in AllGames */
+.page-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  color: var(--text-muted);
+  max-width: 320px;
+  transition: border 0.2s;
+}
+.page-search:focus-within {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.page-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+/* ============================================
+   GIFT CARDS FILTERS
+   ============================================ */
+.gift-cards-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.gift-filter-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+.gift-filter-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ============================================
+   CART — PLATFORM SELECTOR
+   ============================================ */
+.cart-item-platform-select {
+  margin-top: 6px;
+}
+.cart-item-platform-select select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.cart-item-platform-select select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Billing address section */
+.billing-address-section {
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.billing-address-section h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.billing-field {
+  margin-bottom: 10px;
+}
+.billing-field input,
+.billing-field select {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 0.88rem;
+  padding: 9px 12px;
+  transition: border 0.2s;
+}
+.billing-field input:focus,
+.billing-field select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.billing-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* ============================================
+   GERMAN NAV FIX
+   ============================================ */
+[lang="de"] .nav-link,
+.navbar-links .nav-link {
+  font-size: 0.82rem;
+}
+
+/* ============================================
+   GAME IMAGE — FULL COVER
+   ============================================ */
+.game-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* ============================================
+   RESPONSIVE — FEATURED POSTER
+   ============================================ */
+@media (max-width: 768px) {
+  .featured-poster {
+    height: 280px;
+  }
+  .featured-poster-overlay {
+    padding: 24px 20px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
+    align-items: flex-end;
+  }
+  .featured-title { font-size: 1.5rem; }
+  .featured-desc { display: none; }
+  .wishlist-header { flex-direction: column; align-items: flex-start; }
+  .wishlist-search input { width: 150px; }
+  .orders-search-bar { flex-direction: column; align-items: stretch; }
+  .billing-row { grid-template-columns: 1fr; }
+  .page-search { max-width: 100%; }
+}
+
 .live-chat-dot {
   width: 7px;
   height: 7px;
@@ -4296,4 +4798,110 @@
     bottom: 16px;
   }
 }
+
+/* ============================================
+   PROFILE — AVATAR & MOBILE
+   ============================================ */
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.15);
+  border: 2px solid rgba(124, 58, 237, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  overflow: hidden;
+}
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.profile-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+}
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-content: start;
+}
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  margin-bottom: 10px;
+}
+.form-group svg { color: var(--text-muted); flex-shrink: 0; }
+.form-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+  .profile-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .profile-card {
+    padding: 20px 16px;
+  }
+}
+
+/* ============================================
+   EXTRA ADMIN STYLES
+   ============================================ */
+.admin-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.admin-revenue-badge {
+  margin-left: 16px;
+  background: rgba(124, 58, 237, 0.15);
+  color: var(--accent);
+  font-size: 0.85rem;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-weight: 600;
+}
+
 

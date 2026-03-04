@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 const EMPTY_CARD = { title: "", price: 0, platform: "", image: "" };
 
@@ -66,8 +67,10 @@ export default function ManageGiftCards() {
       }
       cancelEdit();
       await loadCards();
+      toast.success(editing === "new" ? "Gift card added!" : "Gift card updated!");
     } catch (e) {
       setError(e.message);
+      toast.error("Error: " + e.message);
     } finally {
       setSaving(false);
     }
@@ -77,6 +80,7 @@ export default function ManageGiftCards() {
     if (!confirm("Delete this gift card?")) return;
     await supabase.from("gift_cards").delete().eq("id", id);
     await loadCards();
+    toast.success("Gift card deleted.");
   }
 
   if (loading)

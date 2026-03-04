@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Package, Eye, EyeOff, ClipboardCopy, Clock, CheckCircle, XCircle, Timer, Copy, Check } from "lucide-react";
+import { Package, Eye, EyeOff, ClipboardCopy, Clock, CheckCircle, XCircle, Timer, Copy, Check, Search } from "lucide-react";
 import { useStore, useFormatPrice } from "../context/StoreContext";
 import { useTranslation } from "react-i18next";
 import { supabase } from "../lib/supabase";
@@ -48,6 +48,8 @@ export default function Orders() {
   const formatPrice = useFormatPrice();
   const [visibleKeys, setVisibleKeys] = useState({});
   const [copiedAddress, setCopiedAddress] = useState(null);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
 
   function copyAddress(orderId, address) {
     navigator.clipboard.writeText(address);
@@ -74,6 +76,22 @@ export default function Orders() {
       ),
     });
   }, [dispatch, state.orders]);
+
+  const filteredOrders = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    let list = state.orders.filter((order) => {
+      if (!q) return true;
+      const matchItems = (order.items || []).some((i) => i.title?.toLowerCase().includes(q));
+      const matchKeys = (order.keys || []).some((k) => k.game?.toLowerCase().includes(q));
+      const matchTotal = String(order.total).includes(q);
+      return matchItems || matchKeys || matchTotal;
+    });
+    if (sortBy === "newest") list = [...list].sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (sortBy === "oldest") list = [...list].sort((a, b) => new Date(a.date) - new Date(b.date));
+    if (sortBy === "price-asc") list = [...list].sort((a, b) => a.total - b.total);
+    if (sortBy === "price-desc") list = [...list].sort((a, b) => b.total - a.total);
+    return list;
+  }, [state.orders, search, sortBy]);
 
   function toggleKey(orderId, idx) {
     const k = `${orderId}-${idx}`;
@@ -117,8 +135,32 @@ export default function Orders() {
   return (
     <div className="orders-page">
       <h1>My Orders</h1>
+      <div className="orders-search-bar">
+        <div className="orders-search-input">
+          <Search size={16} />
+          <input
+            type="text"
+            placeholder="Search by game name or price..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <select
+          className="orders-sort-select"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="price-asc">Price: Low → High</option>
+        </select>
+      </div>
+      {filteredOrders.length === 0 && (
+        <div className="empty-state"><p>No orders match your search.</p></div>
+      )}
       <div className="orders-list">
-        {state.orders.map((order) => (
+        {filteredOrders.map((order) => (
           <div key={order.id} className="order-card">
             <div className="order-header">
               <div>

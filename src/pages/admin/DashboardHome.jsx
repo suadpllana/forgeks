@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Gamepad2, Users, ShoppingBag, DollarSign } from "lucide-react";
+import { Gamepad2, Users, ShoppingBag, DollarSign, RefreshCw, TrendingUp } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 export default function DashboardHome() {
   const [stats, setStats] = useState({
@@ -8,48 +9,41 @@ export default function DashboardHome() {
     totalUsers: 0,
     totalOrders: 0,
     totalRevenue: 0,
+    pendingCrypto: 0,
   });
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      const [gamesRes, ordersRes, usersRes] = await Promise.all([
-        supabase.from("games").select("id", { count: "exact", head: true }),
-        supabase
-          .from("orders")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(5),
-        supabase
-          .from("profiles")
-          .select("id", { count: "exact", head: true }),
-      ]);
-
-      const orders = ordersRes.data || [];
-      const totalRevenue = orders.reduce(
-        (s, o) => s + Number(o.total || 0),
-        0
-      );
-
-      // Get total revenue from ALL orders
-      const { data: allOrders } = await supabase
+  async function load() {
+    setLoading(true);
+    const [gamesRes, ordersRes, usersRes] = await Promise.all([
+      supabase.from("games").select("id", { count: "exact", head: true }),
+      supabase
         .from("orders")
-        .select("total");
-      const fullRevenue = (allOrders || []).reduce(
-        (s, o) => s + Number(o.total || 0),
-        0
-      );
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(5),
+      supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true }),
+    ]);
 
-      setStats({
-        totalGames: gamesRes.count || 0,
-        totalUsers: usersRes.count || 0,
-        totalOrders: (allOrders || []).length,
-        totalRevenue: fullRevenue,
-      });
-      setRecentOrders(orders);
-      setLoading(false);
-    }
+    const { data: allOrders } = await supabase.from("orders").select("total, status");
+    const fullRevenue = (allOrders || []).reduce((s, o) => s + Number(o.total || 0), 0);
+    const pendingCrypto = (allOrders || []).filter((o) => o.status === "pending_crypto").length;
+
+    setStats({
+      totalGames: gamesRes.count || 0,
+      totalUsers: usersRes.count || 0,
+      totalOrders: (allOrders || []).length,
+      totalRevenue: fullRevenue,
+      pendingCrypto,
+    });
+    setRecentOrders(ordersRes.data || []);
+    setLoading(false);
+  }
+
+  useEffect(() => {
     load();
   }, []);
 
@@ -58,7 +52,12 @@ export default function DashboardHome() {
 
   return (
     <div className="dashboard-home">
-      <h2>Dashboard Overview</h2>
+      <div className="admin-header-row">
+        <h2>Dashboard Overview</h2>
+        <button className="btn btn-outline btn-sm" onClick={() => { load(); toast.success("Stats refreshed"); }}>
+          <RefreshCw size={14} /> Refresh
+        </button>
+      </div>
 
       <div className="stats-grid">
         <div className="stat-card">
@@ -99,6 +98,17 @@ export default function DashboardHome() {
             <span className="stat-label">Total Revenue</span>
           </div>
         </div>
+        {stats.pendingCrypto > 0 && (
+          <div className="stat-card" style={{ borderColor: "#f59e0b" }}>
+            <div className="stat-icon" style={{ background: "rgba(245,158,11,0.15)", color: "#f59e0b" }}>
+              <TrendingUp size={24} />
+            </div>
+            <div>
+              <span className="stat-value" style={{ color: "#f59e0b" }}>{stats.pendingCrypto}</span>
+              <span className="stat-label">Pending Crypto</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="admin-section">

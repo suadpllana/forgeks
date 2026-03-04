@@ -70,7 +70,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="navbar-logo">
             <Gamepad2 size={28} />
-            <span>Forge Ks</span>
+            <span>ForgeKs</span>
           </Link>
 
           {/* Desktop Links */}
@@ -193,7 +193,7 @@ export default function Navbar() {
         <div className="mobile-sidebar-header">
           <Link to="/" className="navbar-logo" onClick={() => setMobileOpen(false)}>
             <Gamepad2 size={24} />
-            <span>Forge Ks</span>
+            <span>ForgeKs</span>
           </Link>
           <button className="icon-btn" onClick={() => setMobileOpen(false)}>
             <X size={22} />

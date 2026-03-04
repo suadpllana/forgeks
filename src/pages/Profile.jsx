@@ -11,6 +11,8 @@ import {
   X,
   Bell,
   BellOff,
+  Camera,
+  ShoppingBag,
 } from "lucide-react";
 import { useStore, useFormatPrice } from "../context/StoreContext";
 import { supabase } from "../lib/supabase";
@@ -21,16 +23,17 @@ export default function Profile() {
   const { state, dispatch } = useStore();
   const formatPrice = useFormatPrice();
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ name: "" });
+  const [form, setForm] = useState({ name: "", avatarUrl: "" });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [profile, setProfile] = useState(null);
   const [emailNotif, setEmailNotif] = useState(false);
   const [notifSaving, setNotifSaving] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
   useEffect(() => {
     if (state.user) {
-      setForm({ name: state.user.name || "" });
+      setForm({ name: state.user.name || "", avatarUrl: state.user.avatar_url || "" });
       fetchProfile();
     }
   }, [state.user?.id]);
@@ -44,6 +47,7 @@ export default function Profile() {
     if (data) {
       setProfile(data);
       setEmailNotif(data.email_notifications ?? false);
+      if (data.avatar_url) setForm((f) => ({ ...f, avatarUrl: data.avatar_url }));
     }
   }
 
@@ -56,15 +60,16 @@ export default function Profile() {
       });
       await supabase
         .from("profiles")
-        .update({ full_name: form.name })
+        .update({ full_name: form.name, avatar_url: form.avatarUrl })
         .eq("id", state.user.id);
 
       dispatch({
         type: "SET_USER",
-        payload: { ...state.user, name: form.name },
+        payload: { ...state.user, name: form.name, avatar_url: form.avatarUrl },
       });
       setMessage(t("profileUpdated"));
       setEditing(false);
+      setAvatarError(false);
     } catch (err) {
       setMessage(err.message);
     } finally {
@@ -124,7 +129,20 @@ export default function Profile() {
       <div className="profile-layout">
         <div className="profile-card">
           <div className="profile-avatar">
-            <UserIcon size={48} />
+            {!avatarError && (state.user.avatar_url || form.avatarUrl) ? (
+              <img
+                src={state.user.avatar_url || form.avatarUrl}
+                alt="Avatar"
+                onError={() => setAvatarError(true)}
+                style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover" }}
+              />
+            ) : (
+              <div className="profile-avatar-placeholder">
+                <span style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent)" }}>
+                  {(state.user.name || state.user.email || "?")[0].toUpperCase()}
+                </span>
+              </div>
+            )}
           </div>
 
           {editing ? (
@@ -136,6 +154,15 @@ export default function Profile() {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder={t("fullNamePlaceholder")}
+                />
+              </div>
+              <div className="form-group">
+                <Camera size={16} />
+                <input
+                  type="url"
+                  value={form.avatarUrl}
+                  onChange={(e) => { setForm({ ...form, avatarUrl: e.target.value }); setAvatarError(false); }}
+                  placeholder="Avatar image URL (optional)"
                 />
               </div>
               <div className="profile-edit-actions">
@@ -151,7 +178,7 @@ export default function Profile() {
                   className="btn btn-outline btn-sm"
                   onClick={() => {
                     setEditing(false);
-                    setForm({ name: state.user.name });
+                    setForm({ name: state.user.name, avatarUrl: state.user.avatar_url || "" });
                   }}
                 >
                   <X size={14} /> {t("cancel")}

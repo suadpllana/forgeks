@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 const EMPTY_GAME = {
   title: "",
@@ -125,8 +126,10 @@ export default function ManageGames() {
       }
       cancelEdit();
       await loadGames();
+      toast.success(editing === "new" ? "Game added successfully!" : "Game updated successfully!");
     } catch (e) {
       setError(e.message);
+      toast.error("Error: " + e.message);
     } finally {
       setSaving(false);
     }
@@ -136,6 +139,7 @@ export default function ManageGames() {
     if (!confirm("Delete this game permanently?")) return;
     await supabase.from("games").delete().eq("id", id);
     await loadGames();
+    toast.success("Game deleted.");
   }
 
   function updateForm(key, val) {

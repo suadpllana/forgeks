@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 import { Globe } from "lucide-react";
 
 const LANGS = [
-  { code: "en", label: "english", flag: "🇬🇧" },
-  { code: "sq", label: "albanian", flag: "🇦🇱" },
-  { code: "de", label: "german", flag: "🇩🇪" },
+  { code: "en", label: "english", flag: "🇬🇧", short: "EN" },
+  { code: "sq", label: "albanian", flag: "🇦🇱", short: "SQ" },
+  { code: "de", label: "german", flag: "🇩🇪", short: "DE" },
 ];
 
 export default function LanguageSwitcher() {
@@ -15,9 +15,7 @@ export default function LanguageSwitcher() {
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (ref.current && !ref.current.contains(e.target)) {
-        setOpen(false);
-      }
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -29,17 +27,18 @@ export default function LanguageSwitcher() {
     setOpen(false);
   }
 
+  const current = LANGS.find((l) => l.code === i18n.language) || LANGS[0];
+
   return (
     <div className="lang-switcher" ref={ref}>
-      <button
-        className="icon-btn lang-btn"
-        onClick={() => setOpen((o) => !o)}
-        title={t("language")}
-      >
-        <Globe size={20} />
+      <button className="lang-btn-current" onClick={() => setOpen((o) => !o)} title={t("language")}>
+        <Globe size={15} />
+        <span className="lang-btn-flag">{current.flag}</span>
+        <span className="lang-btn-code">{current.short}</span>
       </button>
       {open && (
         <div className="lang-dropdown">
+          <div className="lang-dropdown-header">{t("language")}</div>
           {LANGS.map((l) => (
             <button
               key={l.code}
@@ -49,6 +48,7 @@ export default function LanguageSwitcher() {
             >
               <span className="lang-flag">{l.flag}</span>
               <span>{t(l.label)}</span>
+              {i18n.language === l.code && <span className="lang-check">✓</span>}
             </button>
           ))}
         </div>

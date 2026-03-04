@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft, CreditCard, Tag } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingBag, ArrowLeft, CreditCard, Tag, MapPin } from "lucide-react";
 import { useStore, placeOrderDB, validateDiscountCode, useFormatPrice } from "../context/StoreContext";
 import { useTranslation } from "react-i18next";
 import PayPalCheckout from "../components/PayPalCheckout";
@@ -17,6 +17,8 @@ export default function Cart() {
   const [appliedDiscount, setAppliedDiscount] = useState(null);
   const [discountMsg, setDiscountMsg] = useState({ text: "", type: "" });
   const [applyingCode, setApplyingCode] = useState(false);
+  const [selectedPlatforms, setSelectedPlatforms] = useState({});
+  const [billing, setBilling] = useState({ name: "", address: "", city: "", country: "", zip: "" });
 
   const subtotal = state.cart.reduce((s, i) => s + i.price * i.qty, 0);
 
@@ -118,6 +120,20 @@ export default function Cart() {
                     </span>
                   ))}
                 </div>
+                {item.platform && item.platform.length > 1 && (
+                  <div className="cart-item-platform-select">
+                    <select
+                      value={selectedPlatforms[item.id] || item.platform[0]}
+                      onChange={(e) =>
+                        setSelectedPlatforms((prev) => ({ ...prev, [item.id]: e.target.value }))
+                      }
+                    >
+                      {item.platform.map((p) => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
               <div className="cart-qty">
                 <button
@@ -205,6 +221,28 @@ export default function Cart() {
           <div className="summary-row total">
             <span>{t("total")}</span>
             <span>{formatPrice(total)}</span>
+          </div>
+
+          {/* Billing address */}
+          <div className="billing-address-section">
+            <h4><MapPin size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />Billing Address <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none' }}>(optional)</span></h4>
+            <div className="billing-field">
+              <input type="text" placeholder="Full name" value={billing.name} onChange={(e) => setBilling({ ...billing, name: e.target.value })} />
+            </div>
+            <div className="billing-field">
+              <input type="text" placeholder="Street address" value={billing.address} onChange={(e) => setBilling({ ...billing, address: e.target.value })} />
+            </div>
+            <div className="billing-row">
+              <div className="billing-field">
+                <input type="text" placeholder="City" value={billing.city} onChange={(e) => setBilling({ ...billing, city: e.target.value })} />
+              </div>
+              <div className="billing-field">
+                <input type="text" placeholder="ZIP / Postal" value={billing.zip} onChange={(e) => setBilling({ ...billing, zip: e.target.value })} />
+              </div>
+            </div>
+            <div className="billing-field">
+              <input type="text" placeholder="Country" value={billing.country} onChange={(e) => setBilling({ ...billing, country: e.target.value })} />
+            </div>
           </div>
 
           {/* Payment options */}

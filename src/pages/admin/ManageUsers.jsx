@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ShieldOff, ShieldCheck, RefreshCw } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -30,6 +31,7 @@ export default function ManageUsers() {
       .eq("id", user.id);
     await loadUsers();
     setActionLoading(null);
+    toast.success(newBanned ? "User banned." : "User unbanned.");
   }
 
   async function setRole(userId, role) {
@@ -37,6 +39,7 @@ export default function ManageUsers() {
     await supabase.from("profiles").update({ role }).eq("id", userId);
     await loadUsers();
     setActionLoading(null);
+    toast.success("Role updated to " + role);
   }
 
   if (loading)

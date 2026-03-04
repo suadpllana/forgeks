@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { SlidersHorizontal, LayoutGrid, List, Loader, X } from "lucide-react";
+import { SlidersHorizontal, LayoutGrid, List, Loader, X, Search } from "lucide-react";
 import GameCard from "../components/GameCard";
 import { useStore } from "../context/StoreContext";
 
@@ -22,6 +22,7 @@ export default function AllGames() {
   const [sort, setSort] = useState("relevance");
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
+  const [localSearch, setLocalSearch] = useState("");
 
   function togglePlatform(p) {
     setPlatforms((prev) =>
@@ -38,11 +39,13 @@ export default function AllGames() {
   const filtered = useMemo(() => {
     let list = [...games];
 
-    // Search — normalize diacritics so e.g. "ragnarok" matches "Ragnarök"
-    if (state.searchQuery.trim()) {
-      const normalize = (str) =>
+    const normalize = (str) =>
         str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-      const q = normalize(state.searchQuery);
+
+    // Use local search or global navbar search
+    const activeQuery = localSearch.trim() || state.searchQuery.trim();
+    if (activeQuery) {
+      const q = normalize(activeQuery);
       list = list.filter(
         (g) =>
           normalize(g.title).includes(q) ||
@@ -81,13 +84,22 @@ export default function AllGames() {
     }
 
     return list;
-  }, [games, state.searchQuery, platforms, categories, onSaleOnly, sort]);
+  }, [games, state.searchQuery, localSearch, platforms, categories, onSaleOnly, sort]);
 
   return (
     <div className="all-games-page">
       <div className="page-header">
         <h1>All Games</h1>
         <div className="header-controls">
+          <div className="page-search">
+            <Search size={15} />
+            <input
+              type="text"
+              placeholder="Search games..."
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+            />
+          </div>
           <span className="results-count">{filtered.length} games</span>
           <select
             className="sort-select"

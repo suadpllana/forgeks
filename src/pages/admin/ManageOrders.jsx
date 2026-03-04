@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, RefreshCw, CheckCircle, XCircle, Clock } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 export default function ManageOrders() {
   const [orders, setOrders] = useState([]);
@@ -57,7 +58,7 @@ export default function ManageOrders() {
       .from("orders")
       .update({ status: "completed", keys })
       .eq("id", order.id);
-    if (error) { alert("Error approving: " + error.message); return; }
+    if (error) { toast.error("Error approving: " + error.message); return; }
     // Notify user
     await supabase.from("notifications").insert({
       user_id: order.user_id,
@@ -65,6 +66,7 @@ export default function ManageOrders() {
       title: "Crypto Payment Confirmed!",
       message: `Your crypto payment of $${Number(order.total).toFixed(2)} has been verified. Your game keys are now available in My Orders.`,
     });
+    toast.success("Order approved — keys delivered!");
     loadOrders();
   }
 
@@ -74,13 +76,14 @@ export default function ManageOrders() {
       .from("orders")
       .update({ status: "rejected" })
       .eq("id", order.id);
-    if (error) { alert("Error rejecting: " + error.message); return; }
+    if (error) { toast.error("Error rejecting: " + error.message); return; }
     await supabase.from("notifications").insert({
       user_id: order.user_id,
       type: "order",
       title: "Crypto Payment Not Received",
       message: `Your crypto order of $${Number(order.total).toFixed(2)} could not be verified. If you believe this is an error, please contact support.`,
     });
+    toast.success("Order rejected — user notified.");
     loadOrders();
   }
 

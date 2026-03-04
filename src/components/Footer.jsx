@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="footer-brand">
           <Link to="/" className="footer-logo">
             <Gamepad2 size={24} />
-            <span>Forge Ks</span>
+            <span>ForgeKs</span>
           </Link>
           <p>Your one-stop shop for PC, PS5 &amp; PS4 digital games. Instant key delivery to your inbox.</p>
         </div>

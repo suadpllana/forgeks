@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Megaphone, Send, Trash2 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 
 export default function AdminAnnouncements() {
   const [title, setTitle] = useState("");
@@ -40,8 +41,10 @@ export default function AdminAnnouncements() {
 
     if (error) {
       setFeedback("Failed: " + error.message);
+      toast.error("Failed to send announcement.");
     } else {
       setFeedback("Announcement sent to all users!");
+      toast.success("Announcement sent to all users!");
       setTitle("");
       setMessage("");
       fetchAnnouncements();
@@ -52,6 +55,7 @@ export default function AdminAnnouncements() {
   async function handleDelete(id) {
     await supabase.from("notifications").delete().eq("id", id);
     setAnnouncements((prev) => prev.filter((a) => a.id !== id));
+    toast.success("Announcement deleted.");
   }
 
   return (

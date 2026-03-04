@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom";
 import { RotateCcw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function RefundPolicy() {
+  const { t } = useTranslation();
   return (
     <div className="legal-page">
       <div className="legal-header">
         <RotateCcw size={36} className="legal-icon" />
-        <h1>Refund Policy</h1>
-        <p className="legal-updated">Last updated: March 2, 2026</p>
+        <h1>{t("refundPolicyTitle")}</h1>
+        <p className="legal-updated">{t("lastUpdated")} March 2, 2026</p>
       </div>
 
       <div className="legal-content">
         <section>
           <h2>Overview</h2>
           <p>
-            All purchases on Forge Ks are for <strong>digital game keys</strong> delivered instantly after
+            All purchases on ForgeKs are for <strong>digital game keys</strong> delivered instantly after
             payment. Due to the nature of digital goods, we have a strict but fair refund policy.
           </p>
         </section>

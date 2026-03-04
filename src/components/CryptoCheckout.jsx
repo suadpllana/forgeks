@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, Copy, Check, Bitcoin, ChevronRight, ArrowLeft, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useFormatPrice } from "../context/StoreContext";
 
 // ── Crypto definitions with networks ────────────────────────────
 const CRYPTO_OPTIONS = [
@@ -72,6 +73,7 @@ async function fetchCryptoPrice(coingeckoId) {
 // ── Component ───────────────────────────────────────────────────
 export default function CryptoCheckout({ total, onSuccess, onCancel }) {
   const { t } = useTranslation();
+  const formatPrice = useFormatPrice();
 
   // Step: "crypto" → "network" → "pay"
   const [step, setStep] = useState("crypto");
@@ -163,7 +165,7 @@ export default function CryptoCheckout({ total, onSuccess, onCancel }) {
         <h2>
           <Bitcoin size={24} /> {t("cryptoPayment")}
         </h2>
-        <p className="payment-total">${total.toFixed(2)}</p>
+        <p className="payment-total">{formatPrice(total)}</p>
 
         {/* ── Step 1: Select Cryptocurrency ── */}
         {step === "crypto" && (
@@ -267,12 +269,12 @@ export default function CryptoCheckout({ total, onSuccess, onCancel }) {
                       {cryptoAmount} {selectedCrypto.symbol}
                     </span>
                     <span className="crypto-amount-usd">
-                      ≈ ${total.toFixed(2)} USD
+                      ≈ {formatPrice(total)}
                     </span>
                   </>
                 ) : (
                   <span className="crypto-amount-value">
-                    ${total.toFixed(2)} {t("inCrypto")} {selectedCrypto.symbol}
+                    {formatPrice(total)} {t("inCrypto")} {selectedCrypto.symbol}
                   </span>
                 )}
               </div>
@@ -306,7 +308,7 @@ export default function CryptoCheckout({ total, onSuccess, onCancel }) {
                 onClick={handleConfirmPayment}
                 disabled={confirming}
               >
-                {confirming ? t("paypalProcessing") : t("iHavePaid")}
+                {confirming ? t("placingOrder") : t("iHavePaid")}
               </button>
               <button
                 className="btn btn-outline full-width"

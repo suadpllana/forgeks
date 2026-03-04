@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom";
 import { Shield } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function PrivacyPolicy() {
+  const { t } = useTranslation();
   return (
     <div className="legal-page">
       <div className="legal-header">
         <Shield size={36} className="legal-icon" />
-        <h1>Privacy Policy</h1>
-        <p className="legal-updated">Last updated: March 2, 2026</p>
+        <h1>{t("privacyPolicyTitle")}</h1>
+        <p className="legal-updated">{t("lastUpdated")} March 2, 2026</p>
       </div>
 
       <div className="legal-content">
         <section>
           <h2>1. Information We Collect</h2>
           <p>
-            When you create an account or make a purchase on Forge Ks, we collect the following personal
+            When you create an account or make a purchase on ForgeKs, we collect the following personal
             information:
           </p>
           <ul>

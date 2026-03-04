@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom";
 import { FileText } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function TermsOfService() {
+  const { t } = useTranslation();
   return (
     <div className="legal-page">
       <div className="legal-header">
         <FileText size={36} className="legal-icon" />
-        <h1>Terms of Service</h1>
-        <p className="legal-updated">Last updated: March 2, 2026</p>
+        <h1>{t("termsOfServiceTitle")}</h1>
+        <p className="legal-updated">{t("lastUpdated")} March 2, 2026</p>
       </div>
 
       <div className="legal-content">
         <section>
           <h2>1. Acceptance of Terms</h2>
           <p>
-            By creating an account or purchasing from Forge Ks, you agree to these Terms of Service and
+            By creating an account or purchasing from ForgeKs, you agree to these Terms of Service and
             our <Link to="/privacy-policy">Privacy Policy</Link>. If you do not agree, please do not use our
             services.
           </p>
@@ -23,7 +25,7 @@ export default function TermsOfService() {
         <section>
           <h2>2. Digital Products</h2>
           <p>
-            Forge Ks sells digital game keys and gift cards for personal, non-commercial use only. All
+            ForgeKs sells digital game keys and gift cards for personal, non-commercial use only. All
             products are delivered electronically. Keys may not be resold, transferred, or distributed
             without our prior written consent.
           </p>
@@ -61,7 +63,7 @@ export default function TermsOfService() {
         <section>
           <h2>6. Disclaimer of Warranties</h2>
           <p>
-            Forge Ks provides the platform "as is" without warranties of any kind. We do not guarantee
+            ForgeKs provides the platform "as is" without warranties of any kind. We do not guarantee
             uninterrupted availability and are not liable for any indirect, incidental, or consequential
             damages arising from the use of our service.
           </p>
